@@ -24,8 +24,12 @@
 %\usepackage{amsmath} % assumes amsmath package installed
 %\usepackage{amssymb}  % assumes amsmath package installed
 
+\usepackage{amsmath}
+\usepackage{paralist}
+\usepackage{microtype}
+
 \title{\LARGE \bf
-Preparation of Papers for IEEE Sponsored Conferences \& Symposia*
+Towards a Self-Consistent Integral Equation Formulation of Optically-Active Media
 }
 
 %\author{ \parbox{3 in}{\centering Huibert Kwakernaak*
@@ -43,14 +47,9 @@ Preparation of Papers for IEEE Sponsored Conferences \& Symposia*
 %         {\tt\small pmisra@cs.wright.edu}}
 %}
 
-\author{Huibert Kwakernaak$^{1}$ and Pradeep Misra$^{2}$% <-this % stops a space
-\thanks{*This work was not supported by any organization}% <-this % stops a space
-\thanks{$^{1}$H. Kwakernaak is with Faculty of Electrical Engineering, Mathematics and Computer Science,
-        University of Twente, 7500 AE Enschede, The Netherlands
-        {\tt\small h.kwakernaak at papercept.net}}%
-\thanks{$^{2}$P. Misra is with the Department of Electrical Engineering, Wright State University,
-        Dayton, OH 45435, USA
-        {\tt\small p.misra at ieee.org}}%
+\author{Connor Glosser$^{1,2}$, B.\ Shanker$^{2}$, and Carlo Piermarocchi$^{1}$% <-this % stops a space
+\thanks{$^{1}$Michigan State University Department of Physics \& Astronomy, East Lansing, MI 48824, USA}%
+\thanks{$^{2}$Michigan State University Department of Electrical \& Computer Engineering, East Lansing, MI 48824, USA}%
 }
 
 
@@ -65,9 +64,21 @@ Preparation of Papers for IEEE Sponsored Conferences \& Symposia*
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
+Conventional models of electromagnetic systems give rise to interesting phenomena through prescription of static boundary conditions.
+  While these boundary conditions sufficiently describe passive scattering within systems, they fail to account for richer behavior in systems with dynamics.
+  These processes have proven essential in countless technological applications motivating the need for an efficient fullwave Maxwell solver that couples to an underlying description of the system behavior.
 
-This electronic document is a ÒliveÓ template. The various components of your paper [title, text, heads, etc.] are already defined on the style sheet, as illustrated by the portions given in this document.
-
+  Here we consider a disordered system of interacting quantum dots---nanoscale semiconductors with wide applicability in systems ranging from lasing to quantum computing to biological contrast imaging and next-generation displays.
+  Much like atoms, individual quantum dots facilitate absorptive and emissive processes at specific frequencies over timescales independent of those in the incident radiation.
+  These processes couple between dots due to the presence of electromagnetic fields, giving rise to emergent nonlinear behavior within the system.
+  By treating quantum dots \emph{semiclassically} within our simulation, we maintain the discrete dynamics inherent to quantum objects without resorting to cumbersome second quantization to describe electromagnetic fields (i.e.\ fields behave classically).
+  This has the advantage of partitoning the simulation into two distinct parts,
+  \begin{inparaenum}[(1)]
+    \item determination of source polarizations through evolution of the differential optical Bloch equations, and
+    \item evaluation of radiation patterns through well-known CEM techniques.
+  \end{inparaenum}
+  We employ a highly-tuned predictor-corrector integration scheme to advance (1) in time and the subsequent polarizations serve as pointlike sources to electromagnetic integral equations (chosen to facilitate accurate point-to-point communication of fields without the computational overhead of a ``radiation grid'').
+  The coupled solution of (1) and (2), then, gives a complete description of both the quantum and electromagnetic dynamics at each timestep, giving rise to lasing effects and other optical phenomena.
 \end{abstract}
 
 
