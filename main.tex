@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{paralist}
 \usepackage{physics}
+\usepackage{siunitx}
 \usepackage{microtype}
 
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -42,11 +43,11 @@ Conventional models of electromagnetic systems give rise to interesting phenomen
   By treating quantum dots \emph{semiclassically} within our simulation, we maintain the discrete dynamics inherent to quantum objects without resorting to cumbersome second quantization to describe electromagnetic fields (i.e.\ fields behave classically).
   This has the advantage of partitoning the simulation into two distinct parts,
   \begin{inparaenum}[(1)]
-    \item determination of source wavefunctions through evolution of the differential Liouville equations, and
-    \item evaluation of radiation patterns through well-known CEM techniques.
+  \item determination of source wavefunctions through evolution of the differential Liouville equations, and \label{enum:step 1}
+  \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
   \end{inparaenum}
   We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as pointlike sources to electromagnetic integral equations (chosen to facilitate accurate point-to-point communication of fields without the computational overhead of a ``radiation grid'').
-  The coupled solution of (1) and (2), then, gives a complete description of both the quantum and electromagnetic dynamics at each timestep, giving rise to lasing effects and other optical phenomena.
+  The coupled solution of \cref{enum:step 1} and \cref{enum:step 2}, then, produces a complete description of both the quantum and electromagnetic dynamics at each timestep, giving rise to lasing effects and other optical phenomena.
 \end{abstract}
 
 \IEEEpeerreviewmaketitle
@@ -56,28 +57,53 @@ Conventional models of electromagnetic systems give rise to interesting phenomen
 
 \section{Problem Statement}
 We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$.
+Due to the bandlimitedness of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$; as such, a density matrix formulation fully describes the time-evolution of each level as well as the coherences between levels that give rise to radiation physics.
+
+The density matrix for a quantum dot, $\hat{\rho}$, evolves according to the Liouville-von Neumann equation
 \begin{equation}
-  \ket{\psi_i} = c_0 \ket{0_i} + c_1 \ket{1_i}
-\end{equation}
-where the kets $\ket{0_i}$ and $\ket{1_i}$ represent the highest valence and lowest conduction states of the $i^\text{th}$ dot.
-The density operator for each dot, $\hat{\rho}_i \equiv \dyad{\psi_i}$, then evolves according to the Liouville-von Neumann equation
-\begin{equation}
-  i \hbar \pdv{\hat{\rho}_i}{t} = \commutator{\hat{\mathcal{H}}_i(t)}{\hat{\rho}_i} - \hat{\mathcal{D}}_i\qty[\hat{\rho}_i].
+  i \hbar \pdv{\hat{\rho}}{t} = \commutator{\hat{\mathcal{H}}(t)}{\hat{\rho}} - \hat{\mathcal{D}}\qty[\hat{\rho}]
   \label{eq:liouville}
 \end{equation}
-Here, hats denote operators and the Hamiltonian $\hat{\mathcal{H}}_i$ accounts for both the dot's internal two-level structure as well as its interaction with an external field.
-The dissipator, $\hat{\mathcal{D}}_i$, serves to return $\hat{\rho}_i$ to the ground state over long periods of time in a manner remeniscent of spontaneous emission.
+where $\hat{\mathcal{H}}$ and $\hat{\mathcal{D}}$ denote the quantum dot's Hamiltonian and dissipator operators, respectively.
+Here, $\hat{\mathcal{H}}(t)$ gives rise to the internal twol-level strucuture of the dot as well as an explicit coupling to an external electric field.
+In contrast $\hat{\mathcal{D}}$ models the aggregate effect of processes that destroy coherences in the quantum dot system through assumed interactions with an external environment (such as spontaneous emission or phonon losses).
 As matrices,
 \begin{subequations}
   \begin{align}
-    \hat{\mathcal{H}}(t) &= \mqty(0 & \hbar \chi_i(t) \\ \hbar \chi_i^*(t) & \hbar \omega_0) \\
-    \hat{\mathcal{D}}[\hat{\rho}] &= \mqty((\rho_{00} + 1)/T_2 & \rho_{01}/T_1 \\ \rho_{10}/T_1 & \rho_{11}/T_2).
+    \hat{\mathcal{H}}(t) &\equiv \mqty(0 & \hbar \chi(t) \\ \hbar \chi^*(t) & \hbar \omega_0) \label{eq:hamiltonian} \\
+    \hat{\mathcal{D}}[\hat{\rho}] &\equiv \mqty((\rho_{00} + 1)/T_2 & \rho_{01}/T_1 \\ \rho_{10}/T_1 & \rho_{11}/T_2). \label{eq:dissipator}
   \end{align}
 \end{subequations}
-where $\hat{\chi}_i(t) \equiv \hat{\vb{d}}_i \cdot \hat{\vb{E}}/\hbar$ and $\hat{\vb{d}}_i \equiv -e \hat{\vb{r}}_i$.
-If we elect to ignore single-photon effects by considering only fields of sufficient strength,
-we may remove the \emph{operator} $\hat{\chi}_i(t)$ in favor of its classical counterpart: $\chi(t) \equiv \vb{d}_i \cdot \vb{E}(\vb{r}_i, t)$ with $\vb{d}_i \equiv \matrixelement{0_i}{\hat{\vb{d}}_i}{1_i}$.
+where $\chi(t) \equiv \vb{d} \cdot \vb{E}/\hbar$, $\vb{d} \equiv \matrixel{0}{\hat{\vb{d}}}{1}$, and $\hat{\vb{d}}$ represents the dipole moment operator $\hat{\vb{d}} \equiv -e \hat{\vb{r}}$. 
+Formally, $\chi(t)$ should contain $\hat{\vb{d}}$ and $\hat{\vb{E}}$ \emph{operators} to couple the quantum dot to a quantized electric field of photons.
+By considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we may instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic sources.
+Moreover, if $a$ characterizes the physical size of a quantum dot and $\vb{E}$ contains 
+
+
+The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
+Defining a classical polarization $\vb{P}$ from a set of dots each having a location $\vb{r}_i$, dipole moment $\hat{\vb{d}}_i$, and density matrix $\hat{\rho}_i$,
+\begin{equation}
+  \begin{aligned}
+    \vb{P} & \equiv \sum_i \Tr[\hat{\vb{d}}_i \hat{\vb{\rho}}_i]\delta(\vb{r} - \vb{r}_i) \\
+    & \equiv \sum_i 2\vb{d}_i \Re(\rho^{\qty(i)}_{01})\delta(\vb{r} - \vb{r}_i)
+  \end{aligned}
+  \label{eq:polarization}
+\end{equation}
+we may compute the electric fied at any other point in space through the dyadic electric field Green's function
+\begin{equation}
+  \begin{gathered}
+  \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int 
+      \qty(I - \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}} + \\ 
+      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} + 
+      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3}  
+  \dd[3]{\vb{r}'}
+  \end{gathered}
+\end{equation}
+where $\bar{\vb{r}} = \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R = t - \abs{\bar{\vb{r}}}/c$.
+
 \section{Solution of \Cref{eq:liouville}}
 \subsection{The Rotating Wave Approximation}
+The Hamiltonian detailed in \cref{eq:hamiltonian} fully describes the inner workings of a two-level system as well as its coupling to an external field, however it does so very stiffly. 
+The systems under consideration contain quantum dots with a transition frequency well into the optical frequency range ($\omega_0 \sim \SI{1500}{\milli \eV}/\hbar$) while $\chi(t)$ contains a maximum frequency roughly a thousand times smaller. 
 
 \end{document}
