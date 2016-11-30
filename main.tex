@@ -79,9 +79,7 @@ As matrices,
 \end{subequations}
 where $\chi(t) \equiv \vb{d} \cdot \vb{E}/\hbar$, $\vb{d} \equiv \matrixel{0}{\hat{\vb{d}}}{1}$, and $\hat{\vb{d}}$ represents the dipole moment operator $\hat{\vb{d}} \equiv -e \hat{\vb{r}}$. 
 Formally, $\chi(t)$ should contain $\hat{\vb{d}}$ and $\hat{\vb{E}}$ \emph{operators} to couple the quantum dot to a quantized electric field of photons.
-By considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we may instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic sources.
-Moreover, if $a$ characterizes the physical size of a quantum dot and $\vb{E}$ contains 
-
+By considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we may instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic source distributions.
 
 The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
 Defining a classical polarization $\vb{P}$ from a set of dots each having a location $\vb{r}_i$, dipole moment $\hat{\vb{d}}_i$, and density matrix $\hat{\rho}_i$,
@@ -102,15 +100,16 @@ we may compute the electric fied at any other point in space through the dyadic 
   \dd[3]{\vb{r}'}
   \end{gathered}
 \end{equation}
-where $\bar{\vb{r}} = \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R = t - \abs{\bar{\vb{r}}}/c$.
+where $\bar{\vb{r}} = \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R = t - \abs{\vb{r} - \vb{r}'}/c$.
 
-\section{Solution of \Cref{eq:liouville}}
+\section{Solution Methodology and Results}
 \subsection{The Rotating Wave Approximation}
 The Hamiltonian detailed in \cref{eq:hamiltonian} fully describes the inner workings of a two-level system as well as its coupling to an external field, however it does so very stiffly. 
 The systems under consideration contain quantum dots with a transition frequency well into the optical frequency range ($\omega_0 \sim \SI{1500}{\milli \eV}/\hbar$) while $\chi(t)$ contains a maximum frequency roughly a thousand times smaller. 
 
 
 \section{Results}
+\Cref{fig:screening} 
 
 \begin{figure}
   \centering
@@ -120,4 +119,13 @@ The systems under consideration contain quantum dots with a transition frequency
   Here, $\rho_{00}$ does not approach zero asymptotically at large separation values due to the action of the dissipator in \cref{eq:liouville}.
   }
 \end{figure}
+
+\begin{figure}
+  \centering
+  \input{figures/photon_echo.tex}
+  \caption{\label{fig:echo} Photon echo effect. 
+    An initial pulse produces significant polarization in 256 nearly-resonant dots as shown by the ``Dephasing'' lobe.
+  }
+\end{figure}
+
 \end{document}
