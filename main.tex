@@ -4,10 +4,13 @@
 %\usepackage{cite}
 \usepackage{amsmath}
 \usepackage{cleveref}
+\usepackage{filecontents}
 \usepackage{graphicx}
 \usepackage{paralist}
+\usepackage{pgfplots}
 \usepackage{physics}
 \usepackage{siunitx}
+
 \usepackage{microtype}
 
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -106,4 +109,15 @@ where $\bar{\vb{r}} = \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R = t - \a
 The Hamiltonian detailed in \cref{eq:hamiltonian} fully describes the inner workings of a two-level system as well as its coupling to an external field, however it does so very stiffly. 
 The systems under consideration contain quantum dots with a transition frequency well into the optical frequency range ($\omega_0 \sim \SI{1500}{\milli \eV}/\hbar$) while $\chi(t)$ contains a maximum frequency roughly a thousand times smaller. 
 
+
+\section{Results}
+
+\begin{figure}
+  \centering
+  \input{figures/screening.tex}
+  \caption{\label{fig:screening} Screening effect in a two-dot system.
+  Immersed in a ``$\pi$-pulse'' designed to excite a single quantum dot from $\ket{0}$ to $\ket{1}$ ($\rho_{00} = 1$ to $\rho_{00} = 0$, a rotation of $\pi$ radians around the Bloch sphere), the interaction between between two dots gives rise to a significant screening effect at short distances.
+  Here, $\rho_{00}$ does not approach zero asymptotically at large separation values due to the action of the dissipator in \cref{eq:liouville}.
+  }
+\end{figure}
 \end{document}
