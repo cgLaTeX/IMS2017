@@ -18,17 +18,17 @@
 \begin{document}
 \title{Towards a Self-Consistent Integral-Equation Model of Optically Active Media}
 
-\author{
-  \IEEEauthorblockN{
-    Connor Glosser\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
-    B.\ Shanker\IEEEauthorrefmark{2}, and
-    Carlo Piermarocchi\IEEEauthorrefmark{1}
-  }
-  \IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Physics \& Astronomy\\
-    Michigan State University, East Lansing, Michigan 48824}
-  \IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Electrical \& Computer Engineering\\
-    Michigan State University, East Lansing, Michigan 48824}
-}
+%\author{
+  %\IEEEauthorblockN{
+    %Connor Glosser\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
+    %B.\ Shanker\IEEEauthorrefmark{2}, and
+    %Carlo Piermarocchi\IEEEauthorrefmark{1}
+  %}
+  %\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Physics \& Astronomy\\
+    %Michigan State University, East Lansing, Michigan 48824}
+  %\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Electrical \& Computer Engineering\\
+    %Michigan State University, East Lansing, Michigan 48824}
+%}
 
 % use for special paper notices
 %\IEEEspecialpapernotice{(Invited Paper)}
@@ -59,6 +59,8 @@ Conventional models of electromagnetic systems give rise to interesting phenomen
 
 
 \section{Problem Statement}
+
+\subsection{The Quantum Liouville Equation}
 We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$.
 Due to the bandlimitedness of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$; as such, a density matrix formulation fully describes the time-evolution of each level as well as the coherences between levels that give rise to radiation physics.
 
@@ -103,27 +105,28 @@ we may write a rotating version of \cref{eq:liouville} as
 Defining $\hat{\mathcal{H}}_\text{rot} \equiv \hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger$ as the rotating-frame Hamiltonian and assuming $\chi(t) \sim \cos(\omega_L t)$, the matrix elements in \cref{eq:rotating liouville} will contain frequencies proportional to $0\omega_L$ and $2\omega_L$.
 As a result, the $2\omega_L$ terms will integrate to zero in solving \cref{eq:rotating liouville} and we may safely ignore them, instead considering only the envelope function of $\chi(t)$.
 
-The evolution of \cref{eq:rotating liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
-Defining a classical polarization in the rotating frame,
+\subsection{Determination of Electric Fields}
+The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
+Using the rotating-frame density matrix detailed above, we may similarly define a rotating-frame polarization as
 \begin{equation}
-  \vb{P}_\text{rot} \equiv \sum_i 2\vb{d}_i \rho_{i_{01}}^\text{rot} \delta(\vb{r} - \vb{r}_i)
+  \vb{P}_\text{rot}(\vb{r}, t) \equiv \sum_i 2\vb{d}_i \rho_{i_{01}}^\text{rot}(t) \delta(\vb{r} - \vb{r}_i)
   \label{eq:polarization}
 \end{equation}
-from a set of dots each having a location $\vb{r}_i$, dipole moment $\hat{\vb{d}}_i$, and off-diagonal rotating-frame matrix element $\rho_{i_{01}}^\text{rot}$, we may compute the electric fied at any other point in space through the dyadic electric field Green's function
+for a set of dots each having a location $\vb{r}_i$, dipole moment $\vb{d}_i$, and off-diagonal rotating-frame matrix element $\rho_{i_{01}}(t)$.
+From this we may compute the slowly-varying electric field envelope at any other point in space via
 \begin{equation}
-  \begin{gathered}
-  \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int 
-      \qty(I - \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}} + \\ 
-      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} + 
-      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3}  
-  \dd[3]{\vb{r}'}
+  \begin{aligned}
+    & \vb{E}_\text{rot}(\vb{r}, t) = \vb{E}_0^\text{rot}(\vb{r}, t) - \frac{\varepsilon_0}{4\pi} \int \\
+    & \qty(I - \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}_\text{rot}(\vb{r}', t_R) + 2 i \omega_L \dot{\vb{P}}_\text{rot}(\vb{r}', t_R) - \omega_L^2 \vb{P}_\text{rot}(\vb{r}', t_R)}{c^2 \abs{\vb{r} - \vb{r}'} e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}} + \\
+    & \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}_\text{rot}(\vb{r}', t_R) + i \omega_L \vb{P}_\text{rot}(\vb{r}', t_R)}{c \abs{\vb{r} - \vb{r}'}^2 e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}} + \\
+    & \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{\vb{P}_\text{rot}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3 e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}} \dd[3]{\vb{r}'}
   \label{eq:efield}
-  \end{gathered}
+  \end{aligned}
 \end{equation}
 where $\bar{\vb{r}} = \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R = t - \abs{\vb{r} - \vb{r}'}/c$.
+\Cref{eq:efield} arises from a rotating-frame transformation of the dyadic electric-field Green's function, again assuming a sinusoidal dependence in $\vb{P}$ and ignoring highly oscillatory components after frequency-shifting by $\omega_L$.
 
 \section{Solution Methodology and Results}
-\subsection{The Rotating Wave Approximation}
 To solve both \cref{eq:liouville} and \cref{eq:efield} simultaneously we must choose an appropriate discretization for $\hat{\rho}$ in both space and time.
 For the purposes of evaluating $\vb{E}(\vb{r},t)$, we consider each dot as a delta function in space and we make use of a Lagrange polynomial basis set to represent $\hat{\rho}$ in time.
 A polynomial representation of sufficient order then allows for easy evaluation of the retarded $\vb{P}(t_R)$, $\dot{\vb{P}}(t_R)$, and $\ddot{\vb{P}}(t_R)$ quantities that appear in \cref{eq:efield}.
