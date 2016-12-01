@@ -81,6 +81,28 @@ where $\chi(t) \equiv \vb{d} \cdot \vb{E}/\hbar$, $\vb{d} \equiv \matrixel{0}{\h
 Formally, $\chi(t)$ should contain $\hat{\vb{d}}$ and $\hat{\vb{E}}$ \emph{operators} to couple the quantum dot to a quantized electric field of photons.
 By considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we may instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic source distributions.
 
+In the systems we wish to investigate, $\omega_0 \gg \chi(t)$. By expanding the commutator in \cref{eq:liouville} for $\chi(t) \in \real$,
+\begin{equation}
+  \commutator{\hat{\mathcal{H}}}{\hat{\rho}} =
+  \mqty(
+    -2 i \chi \Im[\rho_{01}] & \chi\qty(1 - 2 \rho_{00}) - \omega_0 \rho_{01} \\ 
+    \omega_0 \rho_{01}^* - \chi\qty(1 - 2\rho_{00}) & 2 i \chi \Im[\rho_{01}]
+  ),
+\end{equation}
+it becomes apparent $\rho_{00}$ contains only low-frequency terms proportional to $\chi(t)$ while $\rho_{01}$ varies much more quickly due to the dependence on $\omega_0$.
+By introducing a time-dependent unitary transformation $\hat{\rho}_\text{rot} = \hat{U}\hat{\rho}\hat{U}^\dagger$ where
+\begin{equation}
+  \hat{U} = \mqty(\dmat{1, e^{i \omega_L t}}), 
+  \label{eq:unitary transformation}
+\end{equation}
+we may write a rotating version of \cref{eq:liouville} as
+\begin{equation}
+  i \hbar \pdv{\hat{\rho}_\text{rot}}{t} = \commutator{\hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger}{\hat{\rho}_\text{rot}} - \hat{\mathcal{D}}[\hat{\rho}_\text{rot}].
+  \label{eq:rotating liouville}
+\end{equation}
+Defining $\hat{\mathcal{H}}_\text{rot} \equiv \hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger$ as the rotating-frame Hamiltonian and assuming $\chi(t) \sim \cos(\omega_L t)$, the matrix elements in \cref{eq:rotating liouville} will contain frequencies proportional to $0\omega_L$ and $2\omega_L$.
+As a result, the $2\omega_L$ terms will integrate out in solving \cref{eq:rotating liouville} and we may safely ignore them, instead considering only the envelope function of $\chi(t)$.
+
 The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
 Defining a classical polarization $\vb{P}$ from a set of dots each having a location $\vb{r}_i$, dipole moment $\hat{\vb{d}}_i$, and density matrix $\hat{\rho}_i$,
 \begin{equation}
