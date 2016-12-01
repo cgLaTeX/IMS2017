@@ -98,14 +98,16 @@ we may compute the electric fied at any other point in space through the dyadic 
       \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} + 
       \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3}  
   \dd[3]{\vb{r}'}
+  \label{eq:efield}
   \end{gathered}
 \end{equation}
 where $\bar{\vb{r}} = \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R = t - \abs{\vb{r} - \vb{r}'}/c$.
 
 \section{Solution Methodology and Results}
 \subsection{The Rotating Wave Approximation}
-The Hamiltonian detailed in \cref{eq:hamiltonian} fully describes the inner workings of a two-level system as well as its coupling to an external field, however it does so very stiffly. 
-The systems under consideration contain quantum dots with a transition frequency well into the optical frequency range ($\omega_0 \sim \SI{1500}{\milli \eV}/\hbar$) while $\chi(t)$ contains a maximum frequency roughly a thousand times smaller. 
+To solve both \cref{eq:liouville} and \cref{eq:efield} simultaneously we must choose an appropriate discretization for $\hat{\rho}$ in both space and time.
+For the purposes of evaluating $\vb{E}(\vb{r},t)$, we consider each dot as a delta function in space and we make use of a Lagrange polynomial basis set to represent $\hat{\rho}$ in time.
+A polynomial representation of sufficient order then allows for easy evaluation of the retarded $\vb{P}(t_R)$, $\dot{\vb{P}}(t_R)$, and $\ddot{\vb{P}}(t_R)$ quantities that appear in \cref{eq:efield}.
 
 
 \section{Results}
@@ -124,7 +126,7 @@ The systems under consideration contain quantum dots with a transition frequency
   \centering
   \input{figures/photon_echo.tex}
   \caption{\label{fig:echo} Photon echo effect. 
-    An initial pulse produces significant polarization in 256 nearly-resonant dots as shown by the ``Dephasing'' lobe.
+    A $\pi$-pulse incident on a collection of 64 nearly-resonant quantum dots serves to rephase their polarizations as an ``echo'' long after both pulses have passed through the system.
   }
 \end{figure}
 
