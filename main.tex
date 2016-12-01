@@ -101,18 +101,15 @@ we may write a rotating version of \cref{eq:liouville} as
   \label{eq:rotating liouville}
 \end{equation}
 Defining $\hat{\mathcal{H}}_\text{rot} \equiv \hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger$ as the rotating-frame Hamiltonian and assuming $\chi(t) \sim \cos(\omega_L t)$, the matrix elements in \cref{eq:rotating liouville} will contain frequencies proportional to $0\omega_L$ and $2\omega_L$.
-As a result, the $2\omega_L$ terms will integrate out in solving \cref{eq:rotating liouville} and we may safely ignore them, instead considering only the envelope function of $\chi(t)$.
+As a result, the $2\omega_L$ terms will integrate to zero in solving \cref{eq:rotating liouville} and we may safely ignore them, instead considering only the envelope function of $\chi(t)$.
 
-The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
-Defining a classical polarization $\vb{P}$ from a set of dots each having a location $\vb{r}_i$, dipole moment $\hat{\vb{d}}_i$, and density matrix $\hat{\rho}_i$,
+The evolution of \cref{eq:rotating liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
+Defining a classical polarization in the rotating frame,
 \begin{equation}
-  \begin{aligned}
-    \vb{P} & \equiv \sum_i \Tr[\hat{\vb{d}}_i \hat{\vb{\rho}}_i]\delta(\vb{r} - \vb{r}_i) \\
-    & \equiv \sum_i 2\vb{d}_i \Re(\rho^{\qty(i)}_{01})\delta(\vb{r} - \vb{r}_i)
-  \end{aligned}
+  \vb{P}_\text{rot} \equiv \sum_i 2\vb{d}_i \rho_{i_{01}}^\text{rot} \delta(\vb{r} - \vb{r}_i)
   \label{eq:polarization}
 \end{equation}
-we may compute the electric fied at any other point in space through the dyadic electric field Green's function
+from a set of dots each having a location $\vb{r}_i$, dipole moment $\hat{\vb{d}}_i$, and off-diagonal rotating-frame matrix element $\rho_{i_{01}}^\text{rot}$, we may compute the electric fied at any other point in space through the dyadic electric field Green's function
 \begin{equation}
   \begin{gathered}
   \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int 
