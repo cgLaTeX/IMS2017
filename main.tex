@@ -39,31 +39,24 @@
 \maketitle
 
 \begin{abstract}
-  Conventional models of electromagnetic systems, with both radiation and scattering systems, are well understood. These involve standard boundary conditions. However, interesting and richer field topology can be found when examining systems with  dynamics. Here, we consider a disordered system of interacting quantum dots---nanoscale semiconductors with wide applicability in systems ranging from lasing to quantum computing to biological contrast imaging and next-generation displays. Quantum dots facilitate absorptive and emissive processes at specific frequencies over timescales independent of those in the incident radiation. We treat quantum dots \emph{semiclassically} to maintain the discrete dynamics inherent to quantum objects without resorting to second quantization to describe electromagnetic fields (i.e.\ fields behave classically). Our solution to the coupled systems proceeds via
+Here we consider a disordered system of interacting quantum dots---nanoscale semiconductors with wide applicability in systems ranging from lasing to quantum computing to biological contrast imaging and next-generation displays.
+Quantum dots facilitate absorptive and emissive processes at specific frequencies over timescales independent of those in the incident radiation; by treating the system \emph{semiclassically} we maintain the discrete dynamics inherent to quantum objects without resorting to second quantization to describe electromagnetic fields (i.e.\ fields behave classically).
+Our solution to the coupled system proceeds via
   \begin{inparaenum}[(1)]
   \item determination of source wavefunctions through evolution of the differential Liouville equations, and \label{enum:step 1}
   \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
   \end{inparaenum}
-  We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources within time domain integral equations electromagnetic integral equations that is used to propagate the field.
-  The coupled solution of \cref{enum:step 1} and \cref{enum:step 2} produces a complete description of both the quantum and electromagnetic dynamics at each timestep. One can use this framework to study lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena. Presentation of the theory, computational framework and interest physical data is the objective of this paper. 
-
-%   Conventional models of electromagnetic systems, with both radiation and scattering systems, are well understood. These involve standard boundary conditions. However, interesting and richer field topology can be found when examining systems with  dynamics. Here, we consider a disordered system of interacting quantum dots---nanoscale semiconductors with wide applicability in systems ranging from lasing to quantum computing to biological contrast imaging and next-generation displays.
-%   Much like atoms, individual quantum dots facilitate absorptive and emissive processes at specific frequencies over timescales independent of those in the incident radiation.
-%   These processes couple between dots due to the presence of electromagnetic fields, giving rise to emergent nonlinear behavior within the system.
-%   By treating quantum dots \emph{semiclassically} within our simulation, we maintain the discrete dynamics inherent to quantum objects without resorting to second quantization to describe electromagnetic fields (i.e.\ fields behave classically).
-%   This has the advantage of partitioning the simulation into two distinct parts,
-%   \begin{inparaenum}[(1)]
-%   \item determination of source wavefunctions through evolution of the differential Liouville equations, and \label{enum:step 1}
-%   \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
-%   \end{inparaenum}
-%   We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources to electromagnetic integral equations (chosen to facilitate accurate point-to-point communication of fields without the computational overhead of a ``radiation grid'').
-%   The coupled solution of \cref{enum:step 1} and \cref{enum:step 2}, then, produces a complete description of both the quantum and electromagnetic dynamics at each timestep, giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
+We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources within time domain integral equations electromagnetic integral equations that is used to propagate the field.
+The coupled solution of (1) and (2) produces a complete description of both the quantum and electromagnetic dynamics at each timestep giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
+This paper gives a presentation of the theory, computational framework, and interesting physical observations for such a system.
 \end{abstract}
 
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-
+Conventional models of electromagnetic systems give rise to interesting phenomena through prescription of static boundary conditions.
+While these boundary conditions sufficiently describe passive scattering within systems, they fail to account for richer behavior in systems with dynamics.
+Such processes have proven essential in countless technological applications motivating the need for an efficient fullwave Maxwell solver that couples to an underlying description of the system behavior.
 
 \section{Problem Statement}
 
@@ -87,7 +80,32 @@ As matrices,
 \end{subequations}
 where $\chi(t) \equiv \vb{d} \cdot \vb{E}/\hbar$, $\vb{d} \equiv \matrixel{0}{\hat{\vb{d}}}{1}$, and $\hat{\vb{d}}$ represents the dipole moment operator $\hat{\vb{d}} \equiv -e \hat{\vb{r}}$. 
 Physically, $\chi(t)$ should contain $\hat{\vb{E}}$ as an \emph{operator} to couple the quantum dot to a quantized electric field of photons.
-By considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic source distributions, consistently with the semiclassical nature of our approach.
+By considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic source distributions in a manner consistent with the semiclassical nature of our approach.
+
+\subsection{Determination of electric fields}
+
+The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
+Using the density matrix formulation detailed above, we may define a classical polarization as
+\begin{equation}
+  \begin{aligned}
+    \vb{P}(\vb{r}, t) &\equiv \sum_i \Tr[\hat{\vb{d}}_i \hat{\rho}_i(t)] \delta(\vb{r} - \vb{r}_i) \\
+                      &\equiv \sum_i 2 \vb{d}_i \Re\qty[\rho_{(01),i}] \delta(\vb{r} - \vb{r}_i)
+  \end{aligned}
+  \label{eq:polarization}
+\end{equation}
+for a set of dots each having a location $\vb{r}_i$, dipole moment $\vb{d}_i$, and off-diagonal rotating-frame matrix element $\rho_{i_{01}}^\text{rot}(t)$.
+From this we may compute the slowly-varying electric field envelope at any other point in space via
+\begin{equation}
+  \begin{aligned}
+    & \vb{E}_\text{rot}(\vb{r}, t) = \vb{E}_0^\text{rot}(\vb{r}, t) - \frac{\varepsilon_0}{4\pi} \int \dd[3]{\vb{r}'} \\
+    & \qty(I - \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}_\text{rot}(\vb{r}', t_R) + 2 i \omega_L \dot{\vb{P}}_\text{rot}(\vb{r}', t_R) - \omega_L^2 \vb{P}_\text{rot}(\vb{r}', t_R)}{c^2 \abs{\vb{r} - \vb{r}'} e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}} + \\
+    & \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}_\text{rot}(\vb{r}', t_R) + i \omega_L \vb{P}_\text{rot}(\vb{r}', t_R)}{c \abs{\vb{r} - \vb{r}'}^2 e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}} + \\
+    & \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{\vb{P}_\text{rot}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3 e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}}
+  \label{eq:efield}
+  \end{aligned}
+\end{equation}
+where $\bar{\vb{r}} = \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R = t - \abs{\vb{r} - \vb{r}'}/c$.
+\Cref{eq:efield} arises from a rotating-frame transformation of the dyadic electric-field Green's function, again assuming a sinusoidal dependence in $\vb{P}$ and ignoring highly oscillatory components after frequency-shifting by $\omega_L$.
 
 In the systems we wish to investigate, $\omega_0 \gg \chi(t)$. By expanding the commutator in \cref{eq:liouville} for $\chi(t) \in \real$,
 \begin{equation}
@@ -109,28 +127,7 @@ we may write a rotating version of \cref{eq:liouville} as
   \label{eq:rotating liouville}
 \end{equation}
 Defining $\hat{\mathcal{H}}_\text{rot} \equiv \hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger$ as the rotating-frame Hamiltonian and assuming $\chi(t) \sim \cos(\omega_L t)$, the matrix elements in \cref{eq:rotating liouville} will contain frequencies proportional to $\omega_0 \pm \omega_L$.
-As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately integrate to zero over any appreciable timescale and we may safely ignore them, instead considering only the envelope function of $\chi(t)$. This forms the basis of the so-called Rotative Wave Approximation (RWA)\cite{Allen1987}.
-
-\subsection{Determination of electric fields}
-The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
-Using the rotating-frame density matrix detailed above, we may similarly define a rotating-frame polarization as
-\begin{equation}
-  \vb{P}_\text{rot}(\vb{r}, t) \equiv \sum_i 2\vb{d}_i \rho_{i_{01}}^\text{rot}(t) \delta(\vb{r} - \vb{r}_i)
-  \label{eq:polarization}
-\end{equation}
-for a set of dots each having a location $\vb{r}_i$, dipole moment $\vb{d}_i$, and off-diagonal rotating-frame matrix element $\rho_{i_{01}}^\text{rot}(t)$.
-From this we may compute the slowly-varying electric field envelope at any other point in space via
-\begin{equation}
-  \begin{aligned}
-    & \vb{E}_\text{rot}(\vb{r}, t) = \vb{E}_0^\text{rot}(\vb{r}, t) - \frac{\varepsilon_0}{4\pi} \int \dd[3]{\vb{r}'} \\
-    & \qty(I - \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}_\text{rot}(\vb{r}', t_R) + 2 i \omega_L \dot{\vb{P}}_\text{rot}(\vb{r}', t_R) - \omega_L^2 \vb{P}_\text{rot}(\vb{r}', t_R)}{c^2 \abs{\vb{r} - \vb{r}'} e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}} + \\
-    & \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}_\text{rot}(\vb{r}', t_R) + i \omega_L \vb{P}_\text{rot}(\vb{r}', t_R)}{c \abs{\vb{r} - \vb{r}'}^2 e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}} + \\
-    & \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{\vb{P}_\text{rot}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3 e^{-i \omega_L \abs{\vb{r} - \vb{r}'}/c}}
-  \label{eq:efield}
-  \end{aligned}
-\end{equation}
-where $\bar{\vb{r}} = \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R = t - \abs{\vb{r} - \vb{r}'}/c$.
-\Cref{eq:efield} arises from a rotating-frame transformation of the dyadic electric-field Green's function, again assuming a sinusoidal dependence in $\vb{P}$ and ignoring highly oscillatory components after frequency-shifting by $\omega_L$.
+As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately integrate to zero over any appreciable timescale and we may safely ignore them, instead considering only the envelope function of $\chi(t)$. This forms the basis of the so-called Rotating Wave Approximation (RWA)\cite{Allen1987}.
 
 \section{Solution Methodology and Results}
 The rotating wave approximation introduced in \cref{eq:rotating liouville} reduces the computational cost of our active media model dramatically, though constructing an appropriate solution scheme still requires some care.
@@ -146,6 +143,7 @@ This discretization, then, suggests a straightforward solution scheme in two ite
 The evaluation of \cref{eq:efield} proceeds straightforwardly save for pre-calculating the spatial terms and interpolation weights prior to evolving anything in time.
 To evolve \cref{eq:rotating liouville}, we make use of a highly-tuned predictor/corrector ($PE(CE)^m$) algorithm detailed in \cite{Glaser2009}.
 By approximating the solution to the differential equation as a weighted set of (complex) exponentials, 
+
 
 \section{Results}
 \Cref{fig:screening} 
