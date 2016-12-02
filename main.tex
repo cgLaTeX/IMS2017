@@ -39,21 +39,25 @@
 \maketitle
 
 \begin{abstract}
-  Conventional models of electromagnetic systems give rise to interesting phenomena through prescription of static boundary conditions.
-  While these boundary conditions sufficiently describe passive scattering within systems, they fail to account for richer behavior in systems with dynamics.
-  Such processes have proven essential in countless technological applications motivating the need for an efficient full-wave Maxwell solver that couples to an underlying description of the system behavior.
-
-  Here we consider a disordered system of interacting quantum dots---nanoscale semiconductors with wide applicability in systems ranging from lasing to quantum computing to biological contrast imaging and next-generation displays.
-  Much like atoms, individual quantum dots facilitate absorptive and emissive processes at specific frequencies over timescales independent of those in the incident radiation.
-  These processes couple between dots due to the presence of electromagnetic fields, giving rise to emergent nonlinear behavior within the system.
-  By treating quantum dots \emph{semiclassically} within our simulation, we maintain the discrete dynamics inherent to quantum objects without resorting to second quantization to describe electromagnetic fields (i.e.\ fields behave classically).
-  This has the advantage of partitioning the simulation into two distinct parts,
+  Conventional models of electromagnetic systems, with both radiation and scattering systems, are well understood. These involve standard boundary conditions. However, interesting and richer field topology can be found when examining systems with  dynamics. Here, we consider a disordered system of interacting quantum dots---nanoscale semiconductors with wide applicability in systems ranging from lasing to quantum computing to biological contrast imaging and next-generation displays. Quantum dots facilitate absorptive and emissive processes at specific frequencies over timescales independent of those in the incident radiation. We treat quantum dots \emph{semiclassically} to maintain the discrete dynamics inherent to quantum objects without resorting to second quantization to describe electromagnetic fields (i.e.\ fields behave classically). Our solution to the coupled systems proceeds via
   \begin{inparaenum}[(1)]
   \item determination of source wavefunctions through evolution of the differential Liouville equations, and \label{enum:step 1}
   \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
   \end{inparaenum}
-  We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources to electromagnetic integral equations (chosen to facilitate accurate point-to-point communication of fields without the computational overhead of a ``radiation grid'').
-  The coupled solution of \cref{enum:step 1} and \cref{enum:step 2}, then, produces a complete description of both the quantum and electromagnetic dynamics at each timestep, giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
+  We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources within time domain integral equations electromagnetic integral equations that is used to propagate the field.
+  The coupled solution of \cref{enum:step 1} and \cref{enum:step 2} produces a complete description of both the quantum and electromagnetic dynamics at each timestep. One can use this framework to study lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena. Presentation of the theory, computational framework and interest physical data is the objective of this paper. 
+
+%   Conventional models of electromagnetic systems, with both radiation and scattering systems, are well understood. These involve standard boundary conditions. However, interesting and richer field topology can be found when examining systems with  dynamics. Here, we consider a disordered system of interacting quantum dots---nanoscale semiconductors with wide applicability in systems ranging from lasing to quantum computing to biological contrast imaging and next-generation displays.
+%   Much like atoms, individual quantum dots facilitate absorptive and emissive processes at specific frequencies over timescales independent of those in the incident radiation.
+%   These processes couple between dots due to the presence of electromagnetic fields, giving rise to emergent nonlinear behavior within the system.
+%   By treating quantum dots \emph{semiclassically} within our simulation, we maintain the discrete dynamics inherent to quantum objects without resorting to second quantization to describe electromagnetic fields (i.e.\ fields behave classically).
+%   This has the advantage of partitioning the simulation into two distinct parts,
+%   \begin{inparaenum}[(1)]
+%   \item determination of source wavefunctions through evolution of the differential Liouville equations, and \label{enum:step 1}
+%   \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
+%   \end{inparaenum}
+%   We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources to electromagnetic integral equations (chosen to facilitate accurate point-to-point communication of fields without the computational overhead of a ``radiation grid'').
+%   The coupled solution of \cref{enum:step 1} and \cref{enum:step 2}, then, produces a complete description of both the quantum and electromagnetic dynamics at each timestep, giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
 \end{abstract}
 
 \IEEEpeerreviewmaketitle
@@ -64,8 +68,7 @@
 \section{Problem Statement}
 
 \subsection{The quantum Liouville-von Neumann equation}
-We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$.
-Due to the bandlimitedness of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$; as such, a density matrix formulation fully describes the time-evolution of each level population as well as the coherences between levels that give rise to radiation physics.
+We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$. Due to the bandlimitedness of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$; as such, a density matrix formulation fully describes the time-evolution of each level population as well as the coherences between levels that give rise to radiation physics.
 
 The density matrix for a quantum dot, $\hat{\rho}$, evolves according to the Liouville-von Neumann equation
 \begin{equation}
