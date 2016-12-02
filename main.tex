@@ -13,13 +13,13 @@
 
 \usepackage{microtype}
 
-\usetikzlibrary{external}
-\tikzexternalize[prefix=build/tikz/]
+%\usetikzlibrary{external}
+%\tikzexternalize[prefix=build/tikz/]
 
 \hyphenation{op-tical net-works semi-conduc-tor}
 
 \begin{document}
-\title{Towards a Self-Consistent Integral-Equation Model of Optically Active Media}
+\title{A Self-Consistent Integral-Equation Framework for Optically Active Media}
 
 %\author{
   %\IEEEauthorblockN{
@@ -46,14 +46,14 @@ Conventional models of electromagnetic systems give rise to interesting phenomen
   Here we consider a disordered system of interacting quantum dots---nanoscale semiconductors with wide applicability in systems ranging from lasing to quantum computing to biological contrast imaging and next-generation displays.
   Much like atoms, individual quantum dots facilitate absorptive and emissive processes at specific frequencies over timescales independent of those in the incident radiation.
   These processes couple between dots due to the presence of electromagnetic fields, giving rise to emergent nonlinear behavior within the system.
-  By treating quantum dots \emph{semiclassically} within our simulation, we maintain the discrete dynamics inherent to quantum objects without resorting to cumbersome second quantization to describe electromagnetic fields (i.e.\ fields behave classically).
-  This has the advantage of partitoning the simulation into two distinct parts,
+  By treating quantum dots \emph{semiclassically} within our simulation, we maintain the discrete dynamics inherent to quantum objects without resorting to second quantization to describe electromagnetic fields (i.e.\ fields behave classically).
+  This has the advantage of partitioning the simulation into two distinct parts,
   \begin{inparaenum}[(1)]
   \item determination of source wavefunctions through evolution of the differential Liouville equations, and \label{enum:step 1}
   \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
   \end{inparaenum}
   We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources to electromagnetic integral equations (chosen to facilitate accurate point-to-point communication of fields without the computational overhead of a ``radiation grid'').
-  The coupled solution of \cref{enum:step 1} and \cref{enum:step 2}, then, produces a complete description of both the quantum and electromagnetic dynamics at each timestep, giving rise to lasing effects and other optical phenomena.
+  The coupled solution of \cref{enum:step 1} and \cref{enum:step 2}, then, produces a complete description of both the quantum and electromagnetic dynamics at each timestep, giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
 \end{abstract}
 
 \IEEEpeerreviewmaketitle
@@ -65,16 +65,16 @@ Conventional models of electromagnetic systems give rise to interesting phenomen
 
 \subsection{The quantum Liouville-von Neumann equation}
 We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$.
-Due to the bandlimitedness of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$; as such, a density matrix formulation fully describes the time-evolution of each level as well as the coherences between levels that give rise to radiation physics.
+Due to the bandlimitedness of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$; as such, a density matrix formulation fully describes the time-evolution of each level population as well as the coherences between levels that give rise to radiation physics.
 
 The density matrix for a quantum dot, $\hat{\rho}$, evolves according to the Liouville-von Neumann equation
 \begin{equation}
   i \hbar \pdv{\hat{\rho}}{t} = \commutator{\hat{\mathcal{H}}(t)}{\hat{\rho}} - \hat{\mathcal{D}}\qty[\hat{\rho}]
   \label{eq:liouville}
 \end{equation}
-where $\hat{\mathcal{H}}$ and $\hat{\mathcal{D}}$ denote the quantum dot's Hamiltonian and dissipator operators, respectively.
-Here, $\hat{\mathcal{H}}(t)$ gives rise to the internal two-level structure of the dot as well as an explicit coupling to an external electric field.
-In contrast $\hat{\mathcal{D}}$ models the aggregate effect of processes that destroy coherences in the quantum dot system through assumed interactions with an external environment (such as spontaneous emission or phonon losses).
+where $\hat{\mathcal{H}}$ and $\hat{\mathcal{D}}$ denote the quantum dot's Hamiltonian and dissipator operators {\it cite Breuer, Heinz-Peter, and Francesco Petruccione. The theory of open quantum systems. Oxford University Press on Demand, 2002.}, respectively.
+Here, $\hat{\mathcal{H}}(t)$ describes the  two-level structure of the dot as well as an explicit coupling to an external electric field.
+In contrast $\hat{\mathcal{D}}$ models the aggregate effect of processes that destroy coherences and relax populations in the quantum dot system through assumed interactions with an external environment (such as spontaneous emission or phonon losses).
 As matrices,
 \begin{subequations}
   \begin{align}
@@ -83,8 +83,8 @@ As matrices,
   \end{align}
 \end{subequations}
 where $\chi(t) \equiv \vb{d} \cdot \vb{E}/\hbar$, $\vb{d} \equiv \matrixel{0}{\hat{\vb{d}}}{1}$, and $\hat{\vb{d}}$ represents the dipole moment operator $\hat{\vb{d}} \equiv -e \hat{\vb{r}}$. 
-Formally, $\chi(t)$ should contain $\hat{\vb{d}}$ and $\hat{\vb{E}}$ \emph{operators} to couple the quantum dot to a quantized electric field of photons.
-By considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we may instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic source distributions.
+Physically, $\chi(t)$ should contain $\hat{\vb{E}}$ as an \emph{operator} to couple the quantum dot to a quantized electric field of photons.
+By considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic source distributions, consistently with the semiclassical nature of our approach.
 
 In the systems we wish to investigate, $\omega_0 \gg \chi(t)$. By expanding the commutator in \cref{eq:liouville} for $\chi(t) \in \real$,
 \begin{equation}
@@ -106,7 +106,7 @@ we may write a rotating version of \cref{eq:liouville} as
   \label{eq:rotating liouville}
 \end{equation}
 Defining $\hat{\mathcal{H}}_\text{rot} \equiv \hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger$ as the rotating-frame Hamiltonian and assuming $\chi(t) \sim \cos(\omega_L t)$, the matrix elements in \cref{eq:rotating liouville} will contain frequencies proportional to $\omega_0 \pm \omega_L$.
-As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately integrate to zero over any appreciable timescale and we may safely ignore them, instead considering only the envelope function of $\chi(t)$.
+As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately integrate to zero over any appreciable timescale and we may safely ignore them, instead considering only the envelope function of $\chi(t)$, which is the Rotative Wave Approximation {\it cite Allen Eberli}
 
 \subsection{Determination of electric fields}
 The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
