@@ -2,6 +2,7 @@
 *.aux
 *.cb
 *.cb2
+*.dat
 *.fls
 *.fmt
 *.fot
@@ -9,8 +10,8 @@
 *.log
 *.lot
 *.out
-*.toc
 *.swp
+*.toc
 
 ## Intermediate documents:
 build/
