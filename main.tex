@@ -39,7 +39,7 @@
 \maketitle
 
 \begin{abstract}
-Conventional models of electromagnetic systems give rise to interesting phenomena through prescription of static boundary conditions.
+  Conventional models of electromagnetic systems give rise to interesting phenomena through prescription of static boundary conditions.
   While these boundary conditions sufficiently describe passive scattering within systems, they fail to account for richer behavior in systems with dynamics.
   Such processes have proven essential in countless technological applications motivating the need for an efficient full-wave Maxwell solver that couples to an underlying description of the system behavior.
 
@@ -72,7 +72,7 @@ The density matrix for a quantum dot, $\hat{\rho}$, evolves according to the Lio
   i \hbar \pdv{\hat{\rho}}{t} = \commutator{\hat{\mathcal{H}}(t)}{\hat{\rho}} - \hat{\mathcal{D}}\qty[\hat{\rho}]
   \label{eq:liouville}
 \end{equation}
-where $\hat{\mathcal{H}}$ and $\hat{\mathcal{D}}$ denote the quantum dot's Hamiltonian and dissipator operators {\it cite Breuer, Heinz-Peter, and Francesco Petruccione. The theory of open quantum systems. Oxford University Press on Demand, 2002.}, respectively.
+where $\hat{\mathcal{H}}$ and $\hat{\mathcal{D}}$ denote the quantum dot's Hamiltonian and dissipator operators, respectively\cite{Breuer2002}.
 Here, $\hat{\mathcal{H}}(t)$ describes the  two-level structure of the dot as well as an explicit coupling to an external electric field.
 In contrast $\hat{\mathcal{D}}$ models the aggregate effect of processes that destroy coherences and relax populations in the quantum dot system through assumed interactions with an external environment (such as spontaneous emission or phonon losses).
 As matrices,
@@ -106,7 +106,7 @@ we may write a rotating version of \cref{eq:liouville} as
   \label{eq:rotating liouville}
 \end{equation}
 Defining $\hat{\mathcal{H}}_\text{rot} \equiv \hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger$ as the rotating-frame Hamiltonian and assuming $\chi(t) \sim \cos(\omega_L t)$, the matrix elements in \cref{eq:rotating liouville} will contain frequencies proportional to $\omega_0 \pm \omega_L$.
-As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately integrate to zero over any appreciable timescale and we may safely ignore them, instead considering only the envelope function of $\chi(t)$, which is the Rotative Wave Approximation {\it cite Allen Eberli}
+As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately integrate to zero over any appreciable timescale and we may safely ignore them, instead considering only the envelope function of $\chi(t)$. This forms the basis of the so-called Rotative Wave Approximation (RWA)\cite{Allen1987}.
 
 \subsection{Determination of electric fields}
 The evolution of \cref{eq:liouville} necessarily produces radiation as the quantum dot absorbs and re-radiates light.
@@ -115,7 +115,7 @@ Using the rotating-frame density matrix detailed above, we may similarly define 
   \vb{P}_\text{rot}(\vb{r}, t) \equiv \sum_i 2\vb{d}_i \rho_{i_{01}}^\text{rot}(t) \delta(\vb{r} - \vb{r}_i)
   \label{eq:polarization}
 \end{equation}
-for a set of dots each having a location $\vb{r}_i$, dipole moment $\vb{d}_i$, and off-diagonal rotating-frame matrix element $\rho_{i_{01}}(t)$.
+for a set of dots each having a location $\vb{r}_i$, dipole moment $\vb{d}_i$, and off-diagonal rotating-frame matrix element $\rho_{i_{01}}^\text{rot}(t)$.
 From this we may compute the slowly-varying electric field envelope at any other point in space via
 \begin{equation}
   \begin{aligned}
