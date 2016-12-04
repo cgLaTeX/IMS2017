@@ -126,7 +126,7 @@ The first step---evaluating \cref{eq:efield}---proceeds straightforwardly save f
 Numerically integrating \cref{eq:liouville}, however, requires some care.
 For this, we make use of a highly-tuned predictor/corrector ($PE(CE)^m$) algorithm detailed in \cite{Glaser2009}.
 By approximating the solution to the differential equation as a weighted set of (complex) exponentials we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy without incurring a significant penalty in the size of our timestep $\Delta t$.
-Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by the time it takes information to traverse the space between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
+Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by delay between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
 %The limitation on $\Delta t$ arises due to the non-linear differential equation, wherein one needs to make sure that $\delta t$ is chosen such that $R_{min}> c \Delta t$.
 This ensures a self consistent solution to the non-linear system.
 However, this constraint results excessive number of time steps.
@@ -178,15 +178,6 @@ The rotating wave approximation introduced in \cref{eq:rotating liouville} reduc
 
 \begin{figure}
   \centering
-  \input{figures/screening.tex}
-  \caption{\label{fig:screening} Screening effect in a two-dot system.
-  Immersed in a ``$\pi$-pulse'' designed to excite a single quantum dot from $\ket{0}$ to $\ket{1}$ ($\rho_{00} = 1$ to $\rho_{00} = 0$, a rotation of $\pi$ radians around the Bloch sphere), the interaction between between two dots gives rise to a significant screening effect at short distances.
-  Here, $\rho_{00}$ does not approach zero asymptotically at large separation values due to the action of the dissipator in \cref{eq:liouville}.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
   \input{figures/photon_echo.tex}
   \caption{\label{fig:echo} Photon echo effect.
     A $\pi$-pulse incident on a collection of 64 nearly-resonant quantum dots serves to rephase their polarizations as an ``echo'' long after both pulses have passed through the system.
@@ -196,7 +187,21 @@ The rotating wave approximation introduced in \cref{eq:rotating liouville} reduc
 \begin{figure}
   \centering
   \input{figures/decoherence.tex}
-  \caption{\label{fig:decoherence} Potato.}
+  \caption{\label{fig:decoherence}
+    Population distribution for $128$ homogeneous dots at the end of several pulse experiments.
+    Each column---shaded by the relative density of points---represents one simulation and each point within a column represents the excitation level, $\rho_{00}$, of a single dot.
+    The horizontal variation within a column has no meaning other than to distinguish individual points.
+    Interactions between particles serve to spread the distribution of populations; with no interactions, the population for every dot in a simulation would vary as $1-\cos(\text{area})$ exactly with no vertical variation.
+  }
+\end{figure}
+
+\begin{figure}
+  \centering
+  \input{figures/screening.tex}
+  \caption{\label{fig:screening} Screening effect in a two-dot system.
+  Immersed in a ``$\pi$-pulse'' designed to excite a single quantum dot from $\ket{0}$ to $\ket{1}$ ($\rho_{00} = 1$ to $\rho_{00} = 0$, a rotation of $\pi$ radians around the Bloch sphere), the interaction between between two dots gives rise to a significant screening effect at short distances.
+  Here, $\rho_{00}$ does not approach zero asymptotically at large separation values due to the action of the dissipator in \cref{eq:liouville}.
+  }
 \end{figure}
 
 \bibliography{random_lasing_reflist}{}
