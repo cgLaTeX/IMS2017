@@ -22,7 +22,7 @@
 \hyphenation{Hamil-tonian band-limitedness op-tical net-works semi-conduc-tor}
 
 \begin{document}
-\title{A Self-Consistent Integral-Equation Framework for Optically Active Media}
+\title{A Self-Consistent Integral Equation Framework for Simulating Optically-Active Media}
 
 %\author{
   %\IEEEauthorblockN{
@@ -51,7 +51,7 @@ Our solution to the coupled system proceeds via
   \end{inparaenum}
 We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources within time domain integral equations electromagnetic integral equations that is used to propagate the field.
 The coupled solution of (1) and (2) produces a complete description of both the quantum and electromagnetic dynamics at each timestep giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
-This paper presents the theory, computational framework, and selected interesting physical observations for such a system.
+This paper presents the theory, computational framework, and selected interesting physical observations for several such systems.
 \end{abstract}
 
 \IEEEpeerreviewmaketitle
@@ -103,13 +103,13 @@ From this we may compute the electric field at any other point in space via the 
     \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int
       \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3} + \\
       \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} +
-      \qty(I -  \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}}
+      \qty(I -  \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}} \dd[3]{\vb{r}'}
   \end{gathered}
   \label{eq:efield}
 \end{equation}
 where $\bar{\vb{r}} \equiv \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R \equiv t - \abs{\vb{r} - \vb{r}'}/c$.
 These fields serve to couple the dynamics of each quantum dot through the definition of $\chi(t)$ in \cref{eq:hamiltonian}.
-Through this coupling \cref{eq:liouville} becomes highly non-linear; $\partial_t \hat{\rho}_j = f(t, \hat{\rho}_i(t - h))$ as well as the reverse interaction (for some delay, $h$), so $\hat{\rho}_i(t)$ implicitly contains terms that depend on itself arbitrarily far into the past.
+Through this coupling \cref{eq:liouville} becomes highly non-linear as $\hat{\rho}_j$ depends on itself arbitrarily far into the past.
 
 
 
@@ -136,9 +136,8 @@ Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitat
   \centering
   \input{figures/frame_comparison.tex}
   \caption{\label{fig:frame comparison}
-    Comparison of $\rho_{00}(t)$ using both fixed and rotating reference frames for an arbitrary dot in an $n=32$ particle simulation.
-    The two frames produce qualitatively similar trajectories, however the rotating frame does so roughly 400 times faster.
-    By eliminating the term that produces the high-frequency oscillation seen in the inset spy, the rotating-frame model required only 160 timesteps to produce this solution while the fixed-frame required 59959.
+    Comparison of $\rho_{00}(t)$ using both fixed and rotating reference frames.
+    Both frames produce largely the same trajectory, however the inset spy reveals the fixed frame contains a minute oscilliatory term that the rotating frame does not.
   }
 \end{figure}
 
@@ -154,7 +153,7 @@ By expanding the commutator in \cref{eq:liouville} for $\chi(t) \in \real$,
     \omega_0 \rho_{01}^* - \chi\qty(1 - 2\rho_{00}) & 2 i \chi \Im[\rho_{01}]
   ),
 \end{equation}
-it becomes apparent that the terms contributing to radiation physics, $\rho_{00}$ and $\rho_{11}$, contain only terms proportional to $\chi(t)$. 
+it becomes apparent that the terms contributing to radiation physics, $\rho_{00}$ and $\rho_{11}$, contain only terms proportional to $\chi(t)$.
 To have $\chi(t)$ approximately equal to $\omega_0$ would require an incident electric field roughly as strong as that used to bind a quantum dot together.
 In such a regime the stability of the nanostructures becomes questionable, let alone the nature of energy transitions, so we may safely choose $\chi(t) \ll \omega_0$.
 
@@ -169,22 +168,17 @@ we may write a rotating version of \cref{eq:liouville} as
   i \hbar \pdv{\hat{\rho}_\text{rot}}{t} = \commutator{\hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger}{\hat{\rho}_\text{rot}} - \hat{\mathcal{D}}[\hat{\rho}_\text{rot}].
   \label{eq:rotating liouville}
 \end{equation}
-with $\hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger \equiv \hat{\mathcal{H}}_\text{rot}$.  
+with $\hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger \equiv \hat{\mathcal{H}}_\text{rot}$.
 As $\chi(t) \sim \cos(\omega_L t)$, the matrix elements in \cref{eq:rotating liouville} will contain frequencies proportional to $\omega_0 \pm \omega_L$.
 As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately integrate to zero over any appreciable timescale and we may safely ignore them, instead considering only the envelope function of $\chi(t)$. This forms the basis of the so-called Rotating Wave Approximation (RWA)\cite{Allen1987}.
 
-
-The rotating wave approximation introduced in \cref{eq:rotating liouville} reduces the computational cost of our active media model dramatically, though constructing an appropriate solution scheme still requires some care.
-
-
 \section{Results}
-\Cref{fig:screening}
 
 \begin{figure}
   \centering
   \input{figures/photon_echo.tex}
   \caption{\label{fig:echo} Photon echo effect.
-    A $\pi$-pulse incident on a collection of 64 nearly-resonant quantum dots serves to re-phase their polarizations as an ``echo'' long after both pulses have passed through the system.
+    A $\pi$-pulse incident on a collection of 64 nearly-resonant quantum dots serves to re-phase their coherences (polarizations) as an ``echo'' flash long after both pulses have passed through the system.
   }
 \end{figure}
 
@@ -195,7 +189,7 @@ The rotating wave approximation introduced in \cref{eq:rotating liouville} reduc
     Population distribution for $128$ homogeneous dots at the end of several pulse experiments.
     Each column---shaded by the relative density of points---represents one simulation and each point within a column represents the excitation level, $\rho_{00}$, of a single dot.
     The horizontal variation within a column has no meaning other than to distinguish individual points.
-    Interactions between particles serve to spread the distribution of populations; with no interactions, the population for every dot in a simulation would vary as $1-\cos(\text{area})$ exactly with no vertical variation.
+    Interactions between particles serve to spread the distribution of populations; with no interactions, the population for every dot in a simulation would follow $\cos(\text{area})$ exactly with no vertical variation.
   }
 \end{figure}
 
@@ -207,6 +201,16 @@ The rotating wave approximation introduced in \cref{eq:rotating liouville} reduc
   Here, $\rho_{00}$ does not approach zero asymptotically at large separation values due to the action of the dissipator in \cref{eq:liouville}.
   }
 \end{figure}
+
+\Cref{fig:frame comparison} details the trajectory of a quantum dot in an $n=32$ particle simulation under the effects of an external ``$\pi$-pulse'' (a pulse constructed to rotate a wavefunction by $\pi$ radians on the Bloch sphere) in fixed and rotating reference frames.
+The fixed-frame solution contains a very small, very high-frequency oscillating term that the rotating frame does not; on timescales significant to the evolution of $\rho_{00}$ (and thus the radiation dynamics) this oscillation all but completely vanishes which facilitates a rotating-frame solution in 160 timesteps (compared with a fixed-frame solution in 59959).
+
+\Cref{fig:echo} shows the results of a two-pulse experiment.
+Two pulses delayed by $\tau$ strike a collection of 64 nearly resonant quantum dots.
+As each dot has a slightly different value of $\omega_0$, the initial pulse dephases the system by evolving the $\hat{\rho}$ at slightly different rates.
+The second pulse, carefully constructed to undo the dephasing, results in an experimentally detectable flash at time $t = 2\tau$.
+
+Finally, \cref{fig:decoherence,fig:screening}
 
 \section{Conclusions}
 Here we have developed the tools required for a simulation of optically-active quantum dots.

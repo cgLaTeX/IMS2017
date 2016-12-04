@@ -2164,14 +2164,14 @@
 \begin{tikzpicture}[>=latex]
   \begin{axis}[
       xlabel={Time (\si{\pico\second})},
-      ylabel={$\Re[\rho_{01}(t)]$ (system average)}
+      ylabel={Average coherence ($\rho_{01}$)}
     ]
     \addplot[smooth, no marks, name path=A, black] table [x index=0, y index = 1]{echo.dat};
     \addplot[smooth, no marks, name path=B, black] table [x index=0, y index = 2]{echo.dat};
 
     \addplot[blue!25] fill between [of=A and B];
 
-    \draw[<-] (axis cs:1.35,0.90) -- (axis cs:3,0.90) node[right]{Dephasing}; 
+    \draw[<-] (axis cs:1.35,0.90) -- (axis cs:3,0.90) node[right]{Dephasing};
 
     \draw[<-] (axis cs:5.1,0.4) -- (axis cs:6.5,0.55) node[right]{Rephasing ($\pi$-pulse)};
 
