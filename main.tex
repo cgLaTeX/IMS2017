@@ -130,7 +130,11 @@ Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitat
 \begin{figure}
   \centering
   \input{figures/frame_comparison.tex}
-  \caption{\label{fig:frame comparison}Potato.}
+  \caption{\label{fig:frame comparison}
+    Comparison of $\rho_{00}(t)$ using both fixed and rotating reference frames for an arbitrary dot in an $n=32$ particle simulation.
+    The two frames produce qualitatively similar trajectories, however the rotating frame does so roughly 400 times faster.
+    By eliminating the term that produces the high-frequency oscillation seen in the inset spy, the rotating-frame model required only 160 timesteps to produce this solution while the fixed-frame required 59959.
+  }
 \end{figure}
 
 \Cref{eq:liouville,eq:efield} sufficiently detail the physics of semiclassical radiation processes in quantum dot systems.
