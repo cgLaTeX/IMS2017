@@ -208,6 +208,14 @@ The rotating wave approximation introduced in \cref{eq:rotating liouville} reduc
   }
 \end{figure}
 
+\section{Conclusions}
+Here we have developed the tools required for a simulation of optically-active quantum dots.
+In describing the coupling between particles, a semiclassical formulation allows us to treat fields as classical objects thereby reducing the complexity of the simulation while simultaneously offering a highly accurate integral equation methodology for propagating radiation throughout the system.
+Additionally, a global rotating-wave approximation \emph{dramatically} reduces the frequency content of the systems under consideration which allows for timesteps several orders of magnitude larger than those available in a fixed-frame model.
+We have shown the numerical validity of such an approximation as well as several features of results obtained with our model for moderate assemblages of dots.
+In the near future, we hope to expand our research efforts in this area to include accelerated computational techniques---such as an Adaptive Integral\cite{Bleszynski1996} or Fast Multipole method\cite{Greengard1987}---for rotating-frame systems as well as phenomena arising from disorder (such as Anderson localization and pulse fragmentation effects).
+
+
 \bibliography{random_lasing_reflist}{}
 \bibliographystyle{plain}
 
