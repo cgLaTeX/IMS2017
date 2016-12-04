@@ -17,7 +17,7 @@
 
 \usetikzlibrary{spy}
 %\usetikzlibrary{external}
-%\tikzexternalize[prefix=tikz/]
+%\tikzexternalize[prefix=build/tikz/]
 
 \hyphenation{Hamil-tonian band-limitedness op-tical net-works semi-conduc-tor}
 
@@ -119,15 +119,17 @@ Through this coupling \cref{eq:liouville} becomes highly non-linear; $\partial_t
 To solve both \cref{eq:liouville,eq:efield} simultaneously we must first choose an appropriate discretization for $\hat{\rho}$ in both space and time.
 As the physical dimensions of these nanostructures remain negligible when compared to the wavelengths present in radiated fields, $\vb{E}(\vb{r}, t)$ varies little throughout the volume occupied by a dot thus we may approximate each as a $\delta$-function in space.
 To represent the temporal part of $\hat{\rho}$ we make use of an interpolatory set of Lagrange polynomials.
-Such a set has two advantages: it easily accounts for nonintegral delay times in $t_R$ by interpolating $\vb{P}(\vb{r}, t)$ between timepoints and it facilitates straightforward evaluation of the polarization derivatives in \cref{eq:efield}.
+Such a set has two advantages: it easily accounts for non-integer delay times in $t_R$ by interpolating $\vb{P}(\vb{r}, t)$ between timepoints and it facilitates straightforward evaluation of the polarization derivatives in \cref{eq:efield}.
 
-This discretization, then, suggests a straightforward solution scheme in two iterated steps.
-We first use \cref{eq:efield} to evaluate $\vb{E}(\vb{r}, t)$ from a given source distribution at the location of each dot and then step \cref{eq:rotating liouville} forward in time to update the source distribution.
+This discretization, then, suggests a straightforward solution methodology to solve this non-linear equation in two iterated steps; (a) we first use \cref{eq:efield} to evaluate $\vb{E}(\vb{r}, t)$ from a given source distribution at the location of each dot and (b ) then step \cref{eq:rotating liouville} forward in time to update the source distribution.
 The first step---evaluating \cref{eq:efield}---proceeds straightforwardly save for pre-calculating the spatial terms and interpolation weights at the start of the simulation.
 Numerically integrating \cref{eq:liouville}, however, requires some care.
 For this, we make use of a highly-tuned predictor/corrector ($PE(CE)^m$) algorithm detailed in \cite{Glaser2009}.
-By approximating the solution to the differential equation as a weighted set of (complex) exponentials we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy without incurring a significant penalty in the size of our timestep, $\Delta t$.
-Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by the delay between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
+By approximating the solution to the differential equation as a weighted set of (complex) exponentials we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy without incurring a significant penalty in the size of our timestep $\Delta t$.
+Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by the time it takes information to traverse the space between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
+%The limitation on $\Delta t$ arises due to the non-linear differential equation, wherein one needs to make sure that $\delta t$ is chosen such that $R_{min}> c \Delta t$.
+This ensures a self consistent solution to the non-linear system.
+However, this constraint results excessive number of time steps.
 
 \subsection{The rotating-wave approximation}
 \begin{figure}
@@ -140,9 +142,9 @@ Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitat
   }
 \end{figure}
 
-\Cref{eq:liouville,eq:efield} sufficiently detail the physics of semiclassical radiation processes in quantum dot systems, however a na\"ive implementation of both presents significant computational issues.
-In the systems we wish to investigate, $\omega_0 \sim \SI{1500}{\milli\eV}$
-
+In single dot system where one is interested in the systems response to an incident pulse), this computational bottleneck is overcome by using a rotating wave approximation.
+When one is aggregating response due to multiple interactions, the computational infrastructure is more complex.
+\Cref{eq:liouville,eq:efield} sufficiently detail the physics of semiclassical radiation processes in quantum dot systems.
 
 In the systems we wish to investigate, $\omega_0 \gg \chi(t)$. By expanding the commutator in \cref{eq:liouville} for $\chi(t) \in \real$,
 \begin{equation}
