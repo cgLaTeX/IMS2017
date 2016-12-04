@@ -64,7 +64,7 @@ Such behaviors have proven essential in countless technological applications mot
 \section{Problem Statement}
 
 \subsection{The quantum Liouville-von Neumann equation}
-We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$. Due to the bandlimitedness of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$.
+We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$. Due to the band limit of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$.
 As such, a density matrix formulation fully describes the time-evolution of the population in each level as well as the coherences between levels that give rise to radiation physics.
 
 The density matrix for a quantum dot, $\hat{\rho}$, evolves according to the Liouville-von Neumann equation
@@ -109,7 +109,7 @@ From this we may compute the electric field at any other point in space via the 
 \end{equation}
 where $\bar{\vb{r}} \equiv \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R \equiv t - \abs{\vb{r} - \vb{r}'}/c$.
 These fields serve to couple the dynamics of each quantum dot through the definition of $\chi(t)$ in \cref{eq:hamiltonian}.
-Through this coupling \cref{eq:liouville} becomes highly non-linear; $\partial_t \hat{\rho}_j = f(t, \hat{\rho}_i(t - h))$ as well as the reverse interaction (for some delay, $h$), so $\hat{\rho}_i(t)$ implicitly contains terms that depend on itself arbitrarly far into the past.
+Through this coupling \cref{eq:liouville} becomes highly non-linear; $\partial_t \hat{\rho}_j = f(t, \hat{\rho}_i(t - h))$ as well as the reverse interaction (for some delay, $h$), so $\hat{\rho}_i(t)$ implicitly contains terms that depend on itself arbitrarily far into the past.
 
 
 
@@ -180,7 +180,7 @@ The rotating wave approximation introduced in \cref{eq:rotating liouville} reduc
   \centering
   \input{figures/photon_echo.tex}
   \caption{\label{fig:echo} Photon echo effect.
-    A $\pi$-pulse incident on a collection of 64 nearly-resonant quantum dots serves to rephase their polarizations as an ``echo'' long after both pulses have passed through the system.
+    A $\pi$-pulse incident on a collection of 64 nearly-resonant quantum dots serves to re-phase their polarizations as an ``echo'' long after both pulses have passed through the system.
   }
 \end{figure}
 
