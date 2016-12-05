@@ -49,7 +49,7 @@ Our solution to the coupled system proceeds via
   \item determination of source wavefunctions through evolution of the differential Liouville equations, and \label{enum:step 1}
   \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
   \end{inparaenum}
-We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources within time domain integral equations electromagnetic integral equations that is used to propagate the field.
+We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the polarizations that arise then serve as point-like sources within the time domain integral equations electromagnetic integral equations that we use to propagate the field.
 The coupled solution of (1) and (2) produces a complete description of both the quantum and electromagnetic dynamics at each timestep giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
 This paper presents the theory, computational framework, and interesting physical observations for several such systems.
 \end{abstract}
@@ -57,11 +57,10 @@ This paper presents the theory, computational framework, and interesting physica
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-Conventional models of electromagnetic systems give rise to interesting phenomena through prescription of boundary conditions.
-While these boundary conditions sufficiently describe passive scattering within systems, they fail to account for richer behavior in systems with dynamics.
-Analytic methods to describe these dynamics employ ensemble-averaged single-particle Green's functions sytled after those used in electronic transport theories. 
+Conventional models of electromagnetic systems produce well-understood radiation and scattering effects through standard boundary conditions, though they fail to account for richer behavior in systems with dynamics.
+Analytic methods to describe these dynamics employ ensemble-averaged single-particle Green's functions sytled after those used in electronic transport theories.
 While such methods have proven remarkably descriptive in describing ordered environments, they break down in the presence of disorder or partial order that often occurs in actual devices thus motivating the need for a full-wave framework to describe the dynamics of interacting quantum dots.
-Current solution strategies often resort to a finite-difference strategy for propagating fields throughout the simulation domain---a technique plagued by significant computational overhead and numerical sensitivities.
+Current full-wave solution strategies often resort to a finite-difference strategy for propagating fields throughout the simulation domain---a technique plagued by significant computational overhead and numerical sensitivities.
 Here, we turn our attention to an integral approach that facilitates fast and accurate field calculations by allowing direct communication of field quantities between quantum dots.
 
 
@@ -100,10 +99,10 @@ Using the density matrix formulation detailed above, we may define a classical p
 for a set of dots each having a location $\vb{r}_i$, dipole moment $\vb{d}_i$, and off-diagonal matrix element $\rho_{01}^{(i)}(t)$.
 From this we may compute the electric field at any other point in space via the the electric dyadic Green's function\cite{Rothwell2008}
 \begin{gather}
-    \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int \dd[3]{\vb{r}'} \left [ 
-      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3} \right . + \nonumber \\
-      \left . \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} +
-      \qty(I -  \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}} \right ] 
+    \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int
+      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3} + \nonumber \\
+      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} +
+      \qty(I -  \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}} \dd[3]{\vb{r}'}
   \label{eq:efield}
 \end{gather}
 where $\bar{\vb{r}} \equiv \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R \equiv t - \abs{\vb{r} - \vb{r}'}/c$.
@@ -129,7 +128,7 @@ By approximating the solution to the differential equation as a weighted set of 
   \centering
   \input{figures/frame_comparison.tex}
   \caption{\label{fig:frame comparison}
-    Comparison of $\rho_{00}(t)$ using both fixed and rotating reference frames for interacting quantum dots.
+    Comparison of $\rho_{00}(t)$ using both fixed (59959 timesteps) and rotating (160 timesteps) reference frames for interacting quantum dots.
     Both frames produce largely the same trajectory, however the inset spy reveals the fixed frame contains a minute oscilliatory term that the rotating frame does not.
   }
 \end{figure}
@@ -137,7 +136,7 @@ By approximating the solution to the differential equation as a weighted set of 
 %In single-dot system where one seeks to describe $\hat{\rho}(t)$ in response to an incident pulse, this computational bottleneck is overcome by using a rotating wave approximation.
 %When one is aggregating response due to multiple interactions, the computational infrastructure is more complex.
 The nonlinearities inherent in coupling \cref{eq:liouville} between dots places significant constraints on $\Delta t$.
-As one must choose $\Delta t < \min(\omega_0^{-1}, \Delta r_\text{min}/c)$ to resolve both the frequency content of \cref{eq:liouville} as well as the interference phenomena arising from \cref{eq:efield} in the nonlinear system, this scheme results in an infeasible number of time steps for the systems we wish to investigate.
+As one must choose $\Delta t < \min(\xi \omega_0^{-1}, \Delta r_\text{min}/c)$ (where $\xi$ denotes an oversampling factor) to resolve both the frequency content of \cref{eq:liouville} as well as the interference phenomena arising from \cref{eq:efield} in the nonlinear system, this scheme results in an infeasible number of time steps for the systems we wish to investigate.
 
 Introducing a time-dependent unitary transformation, $\hat{\rho}_\text{rot} = \hat{U}\hat{\rho}\hat{U}^\dagger$, where $\hat{U} \equiv \text{diag}(1, e^{i \omega_L t})$,
 we may write a rotating version of \cref{eq:liouville} as
@@ -151,10 +150,10 @@ we may write a rotating version of \cref{eq:liouville} as
 with $\hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger \equiv \hat{\mathcal{H}}_\text{rot}$.
 We may similarly construct rotating-frame equivalents of \cref{eq:polarization,eq:efield} from the off-diagonal elements of \cref{eq:rotating liouville}.
 The resulting equations (not shown) shift the phase relationship between particles from a time-delay to an explicit $e^{-i \omega_L \Delta r_{ij}/c}$ factor;if $\chi(t)$ contains a slowly-varying envelope modulated by a sinusoid at frequency $\omega_0$ then \cref{eq:rotating liouville} (and the resulting radiation) will contain only terms proportional to $\omega_0 \pm \omega_L$.
-Over the timescales required to integrate \cref{eq:rotating liouville}, the high frequency terms will integrate to zero and we may safely ignore them.
+Over the timescales required to advance the radiation dynamics significantly, the integral of the high frequency terms becomes vanishingly small and we may safely ignore them.
  thereby maintaining interference phenomena but \emph{greatly} reducing the frequency content of the sources.
 This eliminates the timestep constraint mentioned previously and we may instead choose $\Delta t \propto (\omega_0 - \omega_L)^{-1}$ (roughly a thousand times larger than $\omega_L^{-1}$).
-Shifting by the light frequency, $\omega_L$, then forms the basis of a global rotating-wave approximation for the system as a whole\cite{Allen1987}.
+This shift then forms the basis of a global rotating-wave approximation for the system as a whole\cite{Allen1987}.
 
 \section{Results}
 
@@ -170,7 +169,7 @@ Shifting by the light frequency, $\omega_L$, then forms the basis of a global ro
   \centering
   \input{figures/decoherence.tex}
   \caption{\label{fig:decoherence}
-    Population distribution after $\SI{10}{\pico\second}$ for $128$ homogeneous dots exposed to different incident pulses. 
+    Population distribution after $\SI{10}{\pico\second}$ for $128$ homogeneous dots exposed to different incident pulses.
     Each column---shaded by the relative density of points---depicts one simulation for a given pulse intensity and each point within a column represents the excitation level, $\rho_{00}$, of a single dot.
     The horizontal variation within a column has no meaning other than to distinguish individual points, and the red circles outline the ``idealized'' population for a system without interactions.
   }
@@ -185,17 +184,16 @@ Shifting by the light frequency, $\omega_L$, then forms the basis of a global ro
 \end{figure}
 
 \Cref{fig:frame comparison} details the trajectory of a quantum dot in an $n=32$ particle simulation under the effects of an external ``$\pi$-pulse'' (a pulse constructed to rotate a wavefunction by $\pi$ radians on the Bloch sphere) in fixed and rotating reference frames.
-The fixed-frame solution contains a very small, very high-frequency oscillating term that the rotating frame does not; on timescales significant to the evolution of $\rho_{00}$ (and thus the radiation dynamics) this oscillation all but completely vanishes which facilitates a rotating-frame solution in 160 timesteps (compared with a fixed-frame solution in 59959).
+The fixed-frame solution contains an extra high-frequency oscillating term; on timescales significant to the evolution of $\rho_{00}$ this oscillation all but completely vanishes.
 
 \Cref{fig:echo} shows the results of a two-pulse experiment.
 Two pulses delayed by $\tau$ strike a collection of 64 nearly resonant quantum dots.
 As each dot has a slightly different value of $\omega_0$, the initial pulse dephases the system by evolving the $\hat{\rho}$ at slightly different rates.
-The second pulse, carefully constructed to undo the dephasing, results in an experimentally detectable flash at time $t = 2\tau$.
+The second pulse undoes the dephasing to produce a detectable flash at time $t = 2\tau$.
 
 Finally, \cref{fig:decoherence} depicts the population distribution for $128$ homogeneous quantum dots after exposure to a variety of incident pulses.
-The integrated pulse angle (analogus to the $\pi$-pulse mentioned earlier) measures the intensity of the incident light.
-As each quantum dot absorbs and emits radiation, some dots feel a stronger field than others and therefore excite more than others which leads to the broadening of the population distribution in each column.
-Without interactions, each dot would excite by exactly the same amount and the population curve in \cref{fig:decoherence} would follow a cosine.
+The integrated pulse angle (analogus to the $\pi$-pulse mentioned earlier) quantifies the intensity of the incident light.
+The variation in $\vb{E}(\vb{r}, t)$ due to the interactions within the system results in a similar variation in $\rho_{00}^{(i)}$ (as compared to the curve outlined in red for a system without interactions).
 Additionally, \cref{fig:screening} gives some explanation of the extreme outliers that appear in several of the columns in \cref{fig:decoherence}.
 A system evolved with two dots very close to each other has very little change in the overall population though the effect diminishes rapidly with distance.
 The outliers in \cref{fig:decoherence} have a small separation relative to the rest of the distribution, thus they see an effect similar to that of \cref{fig:screening} (though we note the effect becomes much more complex than simply screening an external field for many-body systems).
@@ -203,10 +201,10 @@ The outliers in \cref{fig:decoherence} have a small separation relative to the r
 
 \section{Conclusions}
 Here we have developed the tools required for a simulation of optically-active quantum dots.
-In describing the coupling between particles, a semiclassical formulation allows us to treat fields as classical objects thereby reducing the complexity of the simulation while simultaneously offering a highly accurate integral equation methodology for propagating radiation throughout the system.
-Additionally, a global rotating-wave approximation \emph{dramatically} reduces the frequency content of the systems under consideration which allows for timesteps several orders of magnitude larger than those available in a fixed-frame model.
-We have shown the numerical validity of such an approximation as well as several features of results obtained with our model for moderate assemblages of dots.
-In the near future, we hope to expand our research efforts in this area to include accelerated computational techniques for rotating-frame systems as well as phenomena arising from disorder (such as Anderson localization and pulse fragmentation effects).
+In describing the coupling between particles, a semiclassical formulation offers a highly accurate integral equation methodology for propagating radiation throughout the system.
+Additionally, a global rotating-wave approximation \emph{dramatically} reduces the frequency content of the systems under consideration which allows for timesteps far larger than those available in a fixed-frame model.
+We have shown the numerical validity of such an approximation as well as several features of results obtained with our model.
+In the near future, we hope to expand our research efforts in this area to include accelerated solvers for rotating-frame systems as well as localization phenomena arising from disorder.
 
 
 \bibliography{random_lasing_reflist}{}
