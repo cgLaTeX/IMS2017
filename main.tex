@@ -107,27 +107,22 @@ From this we may compute the electric field at any other point in space via the 
   \label{eq:efield}
 \end{gather}
 where $\bar{\vb{r}} \equiv \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R \equiv t - \abs{\vb{r} - \vb{r}'}/c$.
-These fields serve to couple the dynamics of each quantum dot through the definition of $\chi(t)$ in \cref{eq:hamiltonian}, though this coupling introduces significant non-linearities to the system as $\hat{\rho}_i$ depends on itself arbitrarily far into the past (through its interaction with other particles).
-
-
+These fields serve to couple the dynamics of each quantum dot through the definition of $\chi(t)$ in \cref{eq:hamiltonian}, though this coupling introduces significant non-linearities to the system as $\hat{\rho}_i$ implicitly depends on itself arbitrarily far into the past through its interaction with other particles.
 
 \section{Solution Methodology}
 \subsection{Discretization and time-evolution}
 
 To solve both \cref{eq:liouville,eq:efield} simultaneously we must first choose an appropriate discretization for $\hat{\rho}$ in both space and time.
-As the physical dimensions of these nanostructures remain negligible when compared to the wavelengths present in radiated fields, $\vb{E}(\vb{r}, t)$ varies little throughout the volume occupied by a dot thus we may approximate each as a $\delta$-function in space.
+As the physical dimensions of these nanostructures remain negligible when compared to the wavelengths present in radiated fields, we approximate each quantum dot as a localized $\delta$-function in space.
 To represent the temporal part of $\hat{\rho}$ we make use of an interpolatory set of backward looking Lagrange polynomials.
 Such a set has two advantages: it easily accounts for non-integer delay times in $t_R$ by interpolating $\vb{P}(\vb{r}, t)$ between timepoints and it facilitates straightforward evaluation of the polarization derivatives in \cref{eq:efield}.
 
-This discretization, then, suggests a straightforward solution methodology to solve this non-linear equation in two iterated steps: we first use \cref{eq:efield} to evaluate $\vb{E}(\vb{r}, t)$ from a given source distribution at the location of each dot and then step \cref{eq:rotating liouville} forward in time to update the source distribution.
+This discretization, then, suggests a solution methodology to solve this non-linear equation in two iterated steps. We first use \cref{eq:efield} to evaluate $\vb{E}(\vb{r}, t)$ from a given source distribution at the location of each dot and then step \cref{eq:rotating liouville} forward in time to update the source distribution.
 Evaluating \cref{eq:efield} proceeds straightforwardly save for pre-calculating the spatial terms and interpolation weights at the start of the simulation.
 Numerically integrating \cref{eq:liouville}, however, requires some care.
 For this, we make use of a highly-tuned predictor/corrector ($PE(CE)^m$) algorithm detailed in \cite{Glaser2009}.
 By approximating the solution to the differential equation as a weighted set of (complex) exponentials we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy.
 %Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by delay between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
-The nonlinearities inherent in coupling \cref{eq:liouville} between dots places significant constraints on $\Delta t$, however.
-As one must choose $\Delta t < \min(\omega_0^{-1}, \Delta r_\text{min}/c)$ to ensure a self-consistent solution to the non-linear system, this scheme results in an infeasible number of time steps for an accurate solution.
-For a single particle one may turn to frequency-shifting arguments to alleviate this issue and we will now show this approach works for many-particle systems as well.
 
 \subsection{The global rotating-wave approximation}
 \begin{figure}
@@ -141,6 +136,9 @@ For a single particle one may turn to frequency-shifting arguments to alleviate 
 
 %In single-dot system where one seeks to describe $\hat{\rho}(t)$ in response to an incident pulse, this computational bottleneck is overcome by using a rotating wave approximation.
 %When one is aggregating response due to multiple interactions, the computational infrastructure is more complex.
+The nonlinearities inherent in coupling \cref{eq:liouville} between dots places significant constraints on $\Delta t$.
+As one must choose $\Delta t < \min(\omega_0^{-1}, \Delta r_\text{min}/c)$ to resolve both the frequency content of \cref{eq:liouville} as well as the interference phenomena arising from \cref{eq:efield} in the nonlinear system, this scheme results in an infeasible number of time steps for the systems we wish to investigate.
+
 Introducing a time-dependent unitary transformation, $\hat{\rho}_\text{rot} = \hat{U}\hat{\rho}\hat{U}^\dagger$, where $\hat{U} \equiv \text{diag}(1, e^{i \omega_L t})$,
 we may write a rotating version of \cref{eq:liouville} as
 \begin{equation}
@@ -151,10 +149,12 @@ we may write a rotating version of \cref{eq:liouville} as
   \label{eq:rotating liouville}
 \end{equation}
 with $\hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger \equiv \hat{\mathcal{H}}_\text{rot}$.
-In the spirit of resonance experiments, we take the incident $\vb{E}$-field to contain both a slowly-varying envelope and a single sinusoid of frequency $\omega_L$.
-As such, $\chi(t) = f(t)\cos(\omega_L t)$ and the exponentials in \cref{eq:rotating liouville} serve to shift the frequencies of the system to $0$ and $2\omega_L$ by the representation of $\cos(\omega_L t)$ in imaginary exponentials.
+We may similarly construct rotating-frame equivalents of \cref{eq:polarization,eq:efield} from the off-diagonal elements of \cref{eq:rotating liouville}.
+The resulting equations (not shown) shift the phase relationship between particles from a time-delay to an explicit $e^{-i \omega_L \Delta r_{ij}/c}$ factor;if $\chi(t)$ contains a slowly-varying envelope modulated by a sinusoid at frequency $\omega_0$ then \cref{eq:rotating liouville} (and the resulting radiation) will contain only terms proportional to $\omega_0 \pm \omega_L$.
+Over the timescales required to integrate \cref{eq:rotating liouville}, the high frequency terms will integrate to zero and we may safely ignore them.
+ thereby maintaining interference phenomena but \emph{greatly} reducing the frequency content of the sources.
+This eliminates the timestep constraint mentioned previously and we may instead choose $\Delta t \propto (\omega_0 - \omega_L)^{-1}$ (roughly a thousand times larger than $\omega_L^{-1}$).
 
-In this reference frame, the high-frequency terms at $2 \omega_L$ will approximately integrate to zero over any appreciable timescale in the process of integrating \cref{eq:rotating liouville} and we may safely ignore them to considering only the envelope function, $f(t)$. This forms the basis of the so-called Rotating Wave Approximation (RWA)\cite{Allen1987}.
 
 \section{Results}
 
