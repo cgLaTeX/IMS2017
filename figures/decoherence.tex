@@ -7,5 +7,23 @@
     ylabel = {Population ($\rho_{00}$)}
     ]
     \addplot graphics[xmin=0, xmax=8, ymin=-1, ymax=1] {figures/rainbow.png};
+    \addplot[only marks, mark=o, red, mark options={line width=1pt}] coordinates {
+      (0.25,0.951362)
+      (0.75,0.806526)
+      (1.25,0.538903)
+      (1.75,0.189238)
+      (2.25,-0.189238)
+      (2.75,-0.538903)
+      (3.25,-0.806526)
+      (3.75,-0.951362)
+      (4.25,-0.951362)
+      (4.75,-0.806526)
+      (5.25,-0.538903)
+      (5.75,-0.189238)
+      (6.25,0.189238)
+      (6.75,0.538903)
+      (7.25,0.806526)
+      (7.75,0.951362)
+    };
   \end{axis}
 \end{tikzpicture}

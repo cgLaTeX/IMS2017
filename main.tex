@@ -136,7 +136,7 @@ Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitat
   \centering
   \input{figures/frame_comparison.tex}
   \caption{\label{fig:frame comparison}
-    Comparison of $\rho_{00}(t)$ using both fixed and rotating reference frames.
+    Comparison of $\rho_{00}(t)$ using both fixed and rotating reference frames for interacting quantum dots.
     Both frames produce largely the same trajectory, however the inset spy reveals the fixed frame contains a minute oscilliatory term that the rotating frame does not.
   }
 \end{figure}
@@ -186,10 +186,9 @@ As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately inte
   \centering
   \input{figures/decoherence.tex}
   \caption{\label{fig:decoherence}
-    Population distribution for $128$ homogeneous dots at the end of several pulse experiments.
-    Each column---shaded by the relative density of points---represents one simulation and each point within a column represents the excitation level, $\rho_{00}$, of a single dot.
-    The horizontal variation within a column has no meaning other than to distinguish individual points.
-    Interactions between particles serve to spread the distribution of populations; with no interactions, the population for every dot in a simulation would follow $\cos(\text{area})$ exactly with no vertical variation.
+    Population distribution after $\SI{10}{\pico\second}$ for $128$ homogeneous dots exposed to different incident pulses. 
+    Each column---shaded by the relative density of points---depicts one simulation for a given pulse intensity and each point within a column represents the excitation level, $\rho_{00}$, of a single dot.
+    The horizontal variation within a column has no meaning other than to distinguish individual points, and the red circles outline the ``idealized'' population for a system without interactions.
   }
 \end{figure}
 
@@ -197,10 +196,9 @@ As $\omega_0 \approx \omega_L$, the high-frequency terms will approximately inte
   \centering
   \input{figures/screening.tex}
   \caption{\label{fig:screening} Screening effect in a two-dot system.
-  Immersed in a ``$\pi$-pulse'' designed to excite a single quantum dot from $\ket{0}$ to $\ket{1}$ ($\rho_{00} = 1$ to $\rho_{00} = 0$, a rotation of $\pi$ radians around the Bloch sphere), the interaction between between two dots gives rise to a significant screening effect at short distances.
-  Here, $\rho_{00}$ does not approach zero asymptotically at large separation values due to the action of the dissipator in \cref{eq:liouville}.
+    For the same incident pulse, quantum dots nearby each other experience very little excitation.
   }
-\end{figure}1AA
+\end{figure}
 
 \Cref{fig:frame comparison} details the trajectory of a quantum dot in an $n=32$ particle simulation under the effects of an external ``$\pi$-pulse'' (a pulse constructed to rotate a wavefunction by $\pi$ radians on the Bloch sphere) in fixed and rotating reference frames.
 The fixed-frame solution contains a very small, very high-frequency oscillating term that the rotating frame does not; on timescales significant to the evolution of $\rho_{00}$ (and thus the radiation dynamics) this oscillation all but completely vanishes which facilitates a rotating-frame solution in 160 timesteps (compared with a fixed-frame solution in 59959).
@@ -210,7 +208,14 @@ Two pulses delayed by $\tau$ strike a collection of 64 nearly resonant quantum d
 As each dot has a slightly different value of $\omega_0$, the initial pulse dephases the system by evolving the $\hat{\rho}$ at slightly different rates.
 The second pulse, carefully constructed to undo the dephasing, results in an experimentally detectable flash at time $t = 2\tau$.
 
-Finally, \cref{fig:decoherence,fig:screening}
+Finally, \cref{fig:decoherence} depicts the population distribution for $128$ homogeneous quantum dots after exposure to a variety of incident pulses.
+The integrated pulse angle (analogus to the $\pi$-pulse mentioned earlier) measures the intensity of the incident light.
+As each quantum dot absorbs and emits radiation, some dots feel a stronger field than others and therefore excite more than others which leads to the broadening of the population distribution in each column.
+Without interactions, each dot would excite by exactly the same amount and the population curve in \cref{fig:decoherence} would follow a cosine.
+Additionally, \cref{fig:screening} gives some explanation of the extreme outliers that appear in several of the columns in \cref{fig:decoherence}.
+A system evolved with two dots very close to each other has very little change in the overall population though the effect diminishes rapidly with distance.
+The outliers in \cref{fig:decoherence} have a small separaration relative to the rest of the distribution, thus they see an efffect similar to that of \cref{fig:screening} (though we note the effect becomes much more complex than simply screening an external field for many-body systems).
+
 
 \section{Conclusions}
 Here we have developed the tools required for a simulation of optically-active quantum dots.
