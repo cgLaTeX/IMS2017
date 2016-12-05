@@ -100,10 +100,10 @@ for a set of dots each having a location $\vb{r}_i$, dipole moment $\vb{d}_i$, a
 From this we may compute the electric field at any other point in space via the the electric dyadic Green's function\cite{Rothwell2008}
 \begin{equation}
   \begin{gathered}
-    \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int
-      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3} + \\
-      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} +
-      \qty(I -  \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}} \dd[3]{\vb{r}'}
+    \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int \dd[3]{\vb{r}'} \left [ 
+      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3} \right . + \\
+      \left . \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} +
+      \qty(I -  \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}} \right ] 
   \end{gathered}
   \label{eq:efield}
 \end{equation}
@@ -118,7 +118,7 @@ Through this coupling \cref{eq:liouville} becomes highly non-linear as $\hat{\rh
 
 To solve both \cref{eq:liouville,eq:efield} simultaneously we must first choose an appropriate discretization for $\hat{\rho}$ in both space and time.
 As the physical dimensions of these nanostructures remain negligible when compared to the wavelengths present in radiated fields, $\vb{E}(\vb{r}, t)$ varies little throughout the volume occupied by a dot thus we may approximate each as a $\delta$-function in space.
-To represent the temporal part of $\hat{\rho}$ we make use of an interpolatory set of Lagrange polynomials.
+To represent the temporal part of $\hat{\rho}$ we make use of an interpolatory set of backward looking Lagrange polynomials.
 Such a set has two advantages: it easily accounts for non-integer delay times in $t_R$ by interpolating $\vb{P}(\vb{r}, t)$ between timepoints and it facilitates straightforward evaluation of the polarization derivatives in \cref{eq:efield}.
 
 This discretization, then, suggests a straightforward solution methodology to solve this non-linear equation in two iterated steps: we first use \cref{eq:efield} to evaluate $\vb{E}(\vb{r}, t)$ from a given source distribution at the location of each dot and then step \cref{eq:rotating liouville} forward in time to update the source distribution.
@@ -127,7 +127,7 @@ Numerically integrating \cref{eq:liouville}, however, requires some care.
 For this, we make use of a highly-tuned predictor/corrector ($PE(CE)^m$) algorithm detailed in \cite{Glaser2009}.
 By approximating the solution to the differential equation as a weighted set of (complex) exponentials we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy.
 %Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by delay between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
-The nonlinearities inherent in coupling \cref{eq:liouville} between dots places significant constraints on $\Delta t$, however, as one must choose $\Delta r_\text{min} > c \Delta t$ to
+The nonlinearities inherent in coupling \cref{eq:liouville} between dots places significant constraints on $\Delta t$. As one must choose $\Delta r_\text{min} > c \Delta t$ to
 ensure a self consistent solution to the non-linear system; a condition that results in an infeasible number of time steps for an accurate solution.
 
 \subsection{The global rotating-wave approximation}
