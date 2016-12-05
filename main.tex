@@ -49,8 +49,8 @@ Our solution to the coupled system proceeds via
   \item determination of source wavefunctions through evolution of the differential Liouville equations, and \label{enum:step 1}
   \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
   \end{inparaenum}
-We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the polarizations that arise then serve as point-like sources within the time domain integral equations electromagnetic integral equations that we use to propagate the field.
-The coupled solution of (1) and (2) produces a complete description of both the quantum and electromagnetic dynamics at each timestep giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
+We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the polarizations that arise then serve as sources within the time domain integral equations that we use to propagate the field.
+This coupled solution produces a complete description of both the quantum and electromagnetic dynamics at each timestep which gives rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
 This paper presents the theory, computational framework, and interesting physical observations for several such systems.
 \end{abstract}
 
@@ -60,7 +60,7 @@ This paper presents the theory, computational framework, and interesting physica
 Conventional models of electromagnetic systems produce well-understood radiation and scattering effects through standard boundary conditions, though they fail to account for richer behavior in systems with dynamics.
 Analytic methods to describe these dynamics employ ensemble-averaged single-particle Green's functions sytled after those used in electronic transport theories.
 While such methods have proven remarkably descriptive in describing ordered environments, they break down in the presence of disorder or partial order that often occurs in actual devices thus motivating the need for a full-wave framework to describe the dynamics of interacting quantum dots.
-Current full-wave solution strategies often resort to a finite-difference strategy for propagating fields throughout the simulation domain---a technique plagued by significant computational overhead and numerical sensitivities.
+Current full-wave solution strategies often resort to finite-difference or other mesh-based strategies\cite{Vanneste2001, Fratalocchi2008, Bachelard2015} for propagating fields throughout the simulation domain---techniques undermined by their computational overhead and numerical sensitivities\cite{Baczewski2013}.
 Here, we turn our attention to an integral approach that facilitates fast and accurate field calculations by allowing direct communication of field quantities between quantum dots.
 
 
@@ -118,9 +118,8 @@ Such a set has two advantages: it easily accounts for non-integer delay times in
 
 This discretization, then, suggests a solution methodology to solve this non-linear equation in two iterated steps. We first use \cref{eq:efield} to evaluate $\vb{E}(\vb{r}, t)$ from a given source distribution at the location of each dot and then step \cref{eq:rotating liouville} forward in time to update the source distribution.
 Evaluating \cref{eq:efield} proceeds straightforwardly save for pre-calculating the spatial terms and interpolation weights at the start of the simulation.
-Numerically integrating \cref{eq:liouville}, however, requires some care.
-For this, we make use of a highly-tuned predictor/corrector ($PE(CE)^m$) algorithm detailed in \cite{Glaser2009}.
-By approximating the solution to the differential equation as a weighted set of (complex) exponentials we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy.
+To numerically integrate \cref{eq:liouville} we make use of the highly-tuned predictor/corrector algorithm detailed in \cite{Glaser2009}.
+By approximating the solution to \cref{eq:liouville} as a weighted set of (complex) exponentials, we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy.
 %Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by delay between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
 
 \subsection{The global rotating-wave approximation}
