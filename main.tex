@@ -51,30 +51,31 @@ Our solution to the coupled system proceeds via
   \end{inparaenum}
 We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the subsequent polarizations that arise then serve as point-like sources within time domain integral equations electromagnetic integral equations that is used to propagate the field.
 The coupled solution of (1) and (2) produces a complete description of both the quantum and electromagnetic dynamics at each timestep giving rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
-This paper presents the theory, computational framework, and selected interesting physical observations for several such systems.
+This paper presents the theory, computational framework, and interesting physical observations for several such systems.
 \end{abstract}
 
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-Conventional models of electromagnetic systems give rise to interesting phenomena through prescription of static boundary conditions.
+Conventional models of electromagnetic systems give rise to interesting phenomena through prescription of boundary conditions.
 While these boundary conditions sufficiently describe passive scattering within systems, they fail to account for richer behavior in systems with dynamics.
-Such behaviors have proven essential in countless technological applications motivating the need for an efficient fullwave Maxwell solver that couples to an underlying description of the system behavior.
+Analytic methods to describe these dynamics employ ensemble-averaged single-particle Green's functions sytled after those used in electronic transport theories. 
+While such methods have proven remarkably descriptive in describing ordered environments, they break down in the presence of disorder or partial order that often occurs in actual devices thus motivating the need for a full-wave framework to describe the dynamics of interacting quantum dots.
+Current solution strategies often resort to a finite-difference strategy for propagating fields throughout the simulation domain---a technique plagued by significant computational overhead and numerical sensitivities.
+Here, we turn our attention to an integral approach that facilitates fast and accurate field calculations by allowing direct communication of field quantities between quantum dots.
+
 
 \section{Problem Statement}
 
 \subsection{The quantum Liouville-von Neumann equation}
 We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$. Due to the band limit of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$.
-As such, a density matrix formulation fully describes the time-evolution of the population in each level as well as the coherences between levels that give rise to radiation physics.
-
-The density matrix for a quantum dot, $\hat{\rho}$, evolves according to the Liouville-von Neumann equation
+A density matrix formulation fully describes the time-evolution of the population in each level and evolves according to the Liouville-von Neumann equation
 \begin{equation}
   i \hbar \pdv{\hat{\rho}}{t} = \commutator{\hat{\mathcal{H}}(t)}{\hat{\rho}} - \hat{\mathcal{D}}\qty[\hat{\rho}]
   \label{eq:liouville}
 \end{equation}
 where $\hat{\mathcal{H}}$ and $\hat{\mathcal{D}}$ denote the quantum dot's Hamiltonian and dissipator operators, respectively\cite{Breuer2002}.
-Here, $\hat{\mathcal{H}}(t)$ describes the  two-level structure of the dot as well as an explicit coupling to an external electric field.
-In contrast $\hat{\mathcal{D}}$ models the aggregate effect of processes that destroy coherences and relax populations in the quantum dot system (such as spontaneous emission or phonon losses) through assumed interactions with an external environment.
+Here, $\hat{\mathcal{H}}(t)$ describes the  two-level structure of the dot as well as an explicit coupling to an external electric field while $\hat{\mathcal{D}}$ models the aggregate effect of processes that destroy coherences and relax populations in the quantum dot system (such as spontaneous emission or phonon losses) through assumed interactions with an external environment.
 As matrices,
 \begin{subequations}
   \begin{align}
@@ -98,18 +99,15 @@ Using the density matrix formulation detailed above, we may define a classical p
 \end{equation}
 for a set of dots each having a location $\vb{r}_i$, dipole moment $\vb{d}_i$, and off-diagonal matrix element $\rho_{01}^{(i)}(t)$.
 From this we may compute the electric field at any other point in space via the the electric dyadic Green's function\cite{Rothwell2008}
-\begin{equation}
-  \begin{gathered}
+\begin{gather}
     \vb{E}(\vb{r}, t) = \vb{E}_0(\vb{r}, t) - \frac{\mu_0}{4\pi} \int \dd[3]{\vb{r}'} \left [ 
-      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3} \right . + \\
+      \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c^2 \vb{P}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^3} \right . + \nonumber \\
       \left . \qty(I - 3\bar{\vb{r}}\bar{\vb{r}}) \frac{c \dot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}^2} +
       \qty(I -  \bar{\vb{r}}\bar{\vb{r}}) \frac{\ddot{\vb{P}}(\vb{r}', t_R)}{\abs{\vb{r} - \vb{r}'}} \right ] 
-  \end{gathered}
   \label{eq:efield}
-\end{equation}
+\end{gather}
 where $\bar{\vb{r}} \equiv \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R \equiv t - \abs{\vb{r} - \vb{r}'}/c$.
-These fields serve to couple the dynamics of each quantum dot through the definition of $\chi(t)$ in \cref{eq:hamiltonian}.
-Through this coupling \cref{eq:liouville} becomes highly non-linear as $\hat{\rho}_j$ depends on itself arbitrarily far into the past.
+These fields serve to couple the dynamics of each quantum dot through the definition of $\chi(t)$ in \cref{eq:hamiltonian}, though this coupling introduces significant non-linearities to the system as $\hat{\rho}_i$ depends on itself arbitrarily far into the past (through its interaction with other particles).
 
 
 
@@ -127,8 +125,9 @@ Numerically integrating \cref{eq:liouville}, however, requires some care.
 For this, we make use of a highly-tuned predictor/corrector ($PE(CE)^m$) algorithm detailed in \cite{Glaser2009}.
 By approximating the solution to the differential equation as a weighted set of (complex) exponentials we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy.
 %Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by delay between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
-The nonlinearities inherent in coupling \cref{eq:liouville} between dots places significant constraints on $\Delta t$. As one must choose $\Delta r_\text{min} > c \Delta t$ to
-ensure a self consistent solution to the non-linear system; a condition that results in an infeasible number of time steps for an accurate solution.
+The nonlinearities inherent in coupling \cref{eq:liouville} between dots places significant constraints on $\Delta t$, however.
+As one must choose $\Delta t < \min(\omega_0^{-1}, \Delta r_\text{min}/c)$ to ensure a self-consistent solution to the non-linear system, this scheme results in an infeasible number of time steps for an accurate solution.
+For a single particle one may turn to frequency-shifting arguments to alleviate this issue and we will now show this approach works for many-particle systems as well.
 
 \subsection{The global rotating-wave approximation}
 \begin{figure}
