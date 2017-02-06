@@ -24,17 +24,17 @@
 \begin{document}
 \title{A Self-Consistent Integral Equation Framework for Simulating Optically-Active Media}
 
-%\author{
-  %\IEEEauthorblockN{
-    %Connor Glosser\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
-    %B.\ Shanker\IEEEauthorrefmark{2}, and
-    %Carlo Piermarocchi\IEEEauthorrefmark{1}
-  %}
-  %\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Physics \& Astronomy\\
-    %Michigan State University, East Lansing, Michigan 48824}
-  %\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Electrical \& Computer Engineering\\
-    %Michigan State University, East Lansing, Michigan 48824}
-%}
+\author{
+  \IEEEauthorblockN{
+    Connor Glosser\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
+    Carlo Piermarocchi\IEEEauthorrefmark{1}, and
+    B.\ Shanker\IEEEauthorrefmark{2}
+  }
+  \IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Physics \& Astronomy\\
+    Michigan State University, East Lansing, Michigan 48824}
+  \IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Electrical \& Computer Engineering\\
+    Michigan State University, East Lansing, Michigan 48824}
+}
 
 % use for special paper notices
 %\IEEEspecialpapernotice{(Invited Paper)}
@@ -50,7 +50,7 @@ Our solution to the coupled system proceeds via
   \item evaluation of radiation patterns through well-known computational electromagnetics techniques. \label{enum:step 2}
   \end{inparaenum}
 We employ a highly-tuned predictor-corrector integration scheme to advance the source wavefunctions in time; the polarizations that arise then serve as sources within the time domain integral equations that we use to propagate the field.
-This coupled solution produces a complete description of both the quantum and electromagnetic dynamics at each timestep which gives rise to lasing effects, non-linear propagation, coupled Rabi oscillations, and other optical phenomena.
+This coupled solution produces a complete description of both the quantum and electromagnetic dynamics at each timestep which gives rise to lasing effects, nonlinear propagation, coupled Rabi oscillations, and other optical phenomena.
 This paper presents the theory, computational framework, and interesting physical observations for several such systems.
 \end{abstract}
 
@@ -70,7 +70,7 @@ Here, we turn our attention to an integral approach that facilitates fast and ac
 We wish to model the behavior of $N$ interacting quantum dots immersed in a homogeneous background medium amidst monochromatic radiation of frequency $\omega_L$. Due to the band limit of the incident radiation, we approximate each quantum dot as a two-level system with transition frequency $\omega_0 \approx \omega_L$.
 A density matrix formulation fully describes the time-evolution of the population in each level and evolves according to the Liouville-von Neumann equation
 \begin{equation}
-  i \hbar \pdv{\hat{\rho}}{t} = \commutator{\hat{\mathcal{H}}(t)}{\hat{\rho}} - \hat{\mathcal{D}}\qty[\hat{\rho}]
+  i \hbar \pdv{\hat{\rho}}{t} = \commutator{\hat{\mathcal{H}}(t)}{\hat{\rho}} - i \hbar \hat{\mathcal{D}}\qty[\hat{\rho}]
   \label{eq:liouville}
 \end{equation}
 where $\hat{\mathcal{H}}$ and $\hat{\mathcal{D}}$ denote the quantum dot's Hamiltonian and dissipator operators, respectively\cite{Breuer2002}.
@@ -79,10 +79,10 @@ As matrices,
 \begin{subequations}
   \begin{align}
     \hat{\mathcal{H}}(t) &\equiv \mqty(0 & \hbar \chi(t) \\ \hbar \chi^*(t) & \hbar \omega_0) \label{eq:hamiltonian} \\
-    \hat{\mathcal{D}}[\hat{\rho}] &\equiv \mqty((\rho_{00} + 1)/T_2 & \rho_{01}/T_1 \\ \rho_{10}/T_1 & \rho_{11}/T_2) \label{eq:dissipator}
+    \hat{\mathcal{D}}[\hat{\rho}] &\equiv \mqty((\rho_{00} - 1)/T_1 & \rho_{01}/T_2 \\ \rho_{10}/T_2 & \rho_{11}/T_1) \label{eq:dissipator}
   \end{align}
 \end{subequations}
-where $\chi(t) \equiv \vb{d} \cdot \vb{E}/\hbar$, $\vb{d} \equiv \matrixel{0}{\hat{\vb{d}}}{1}$, $\hat{\vb{d}}$ represents the dipole moment operator $\hat{\vb{d}} \equiv -e \hat{\vb{r}}$, and $T_{1,2}$ denote characteristic relaxation times (determined empirically).
+where $\chi(t) \equiv \vb{d} \cdot \vb{E}/\hbar$, $\vb{d} \equiv \matrixel{0}{\hat{\vb{d}}}{1}$, $\hat{\vb{d}} \equiv -e \hat{\vb{r}}$ represents the dipole moment operator of the quantum system, and $T_{1,2}$ denote characteristic relaxation times (determined phenomenologically).
 Physically, $\chi(t)$ should contain $\hat{\vb{E}}$ as an \emph{operator} to couple the quantum dot to a quantized electric field of photons; by considering systems with a sufficiently high field intensity so as to ignore single-photon effects, however, we instead treat $\vb{E}$ as a classical object arising from conventional electromagnetic source distributions in a manner consistent with the semiclassical nature of our approach.
 
 \subsection{Determination of electric fields}
@@ -106,20 +106,19 @@ From this we may compute the electric field at any other point in space via the 
   \label{eq:efield}
 \end{gather}
 where $\bar{\vb{r}} \equiv \vb{r} - \vb{r}'/\abs{\vb{r} - \vb{r}'}$ and $t_R \equiv t - \abs{\vb{r} - \vb{r}'}/c$.
-These fields serve to couple the dynamics of each quantum dot through the definition of $\chi(t)$ in \cref{eq:hamiltonian}, though this coupling introduces significant non-linearities to the system as $\hat{\rho}_i$ implicitly depends on itself arbitrarily far into the past through its interaction with other particles.
+These fields serve to couple the dynamics of each quantum dot through the definition of $\chi(t)$ in \cref{eq:hamiltonian}. We note, however, that this coupling introduces significant nonlinearities to the system as $\hat{\rho}_i$ implicitly depends on itself arbitrarily far into the past through its interaction with other particles.
 
 \section{Solution Methodology}
 \subsection{Discretization and time-evolution}
 
-To solve both \cref{eq:liouville,eq:efield} simultaneously we must first choose an appropriate discretization for $\hat{\rho}$ in both space and time.
+To solve \cref{eq:liouville,eq:efield} simultaneously we must first choose an appropriate discretization for $\hat{\rho}$ in both space and time.
 As the physical dimensions of these nanostructures remain negligible when compared to the wavelengths present in radiated fields, we approximate each quantum dot as a localized $\delta$-function in space.
 To represent the temporal part of $\hat{\rho}$ we make use of an interpolatory set of backward looking Lagrange polynomials.
 Such a set has two advantages: it easily accounts for non-integer delay times in $t_R$ by interpolating $\vb{P}(\vb{r}, t)$ between timepoints and it facilitates straightforward evaluation of the polarization derivatives in \cref{eq:efield}.
 
-This discretization, then, suggests a solution methodology to solve this non-linear equation in two iterated steps. We first use \cref{eq:efield} to evaluate $\vb{E}(\vb{r}, t)$ from a given source distribution at the location of each dot and then step \cref{eq:rotating liouville} forward in time to update the source distribution.
+This discretization, then, suggests a solution methodology to solve this nonlinear equation in two iterated steps. We first use \cref{eq:efield} to evaluate $\vb{E}(\vb{r}, t)$ from a given source distribution at the location of each dot and then step \cref{eq:liouville} forward in time to update the source distribution.
 Evaluating \cref{eq:efield} proceeds straightforwardly save for pre-calculating the spatial terms and interpolation weights at the start of the simulation.
-To numerically integrate \cref{eq:liouville} we make use of the highly-tuned predictor/corrector algorithm detailed in \cite{Glaser2009}.
-By approximating the solution to \cref{eq:liouville} as a weighted set of (complex) exponentials, we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy.
+To numerically integrate \cref{eq:liouville} we make use of the highly-tuned predictor/corrector algorithm detailed in \cite{Glaser2009}: by approximating the solution to \cref{eq:liouville} as a weighted set of (complex) exponentials, we recover the oscillating and decaying modes in $\hat{\rho}(t)$ with a high degree of accuracy.
 %Moreover, repeated iterations of the corrector-evaluator step ($CE^m$) facilitate mutual interactions of quantum dots within one timestep; as a result, the timestep becomes unconstrained by delay between quantum dots and we need only consider the frequencies in the system in choosing $\Delta t$.
 
 \subsection{The global rotating-wave approximation}
@@ -149,7 +148,7 @@ we may write a rotating version of \cref{eq:liouville} as
 with $\hat{U} \hat{\mathcal{H}} \hat{U}^\dagger - \hat{U} \, \partial_t \hat{U}^\dagger \equiv \hat{\mathcal{H}}_\text{rot}$.
 We may similarly construct rotating-frame equivalents of \cref{eq:polarization,eq:efield} from the off-diagonal elements of \cref{eq:rotating liouville}.
 The resulting equations (not shown) shift the phase relationship between particles from a time-delay to an explicit $e^{-i \omega_L \Delta r_{ij}/c}$ factor; if $\chi(t)$ contains a slowly-varying envelope modulated by a sinusoid at frequency $\omega_0$ then \cref{eq:rotating liouville} (and the resulting radiation) will contain only terms proportional to $\omega_0 \pm \omega_L$.
-Over the timescales required to advance the radiation dynamics significantly, the integral of the high frequency terms becomes vanishingly small and we may safely ignore them thereby maintaining interference phenomena but \emph{greatly} reducing the frequency content of the sources.
+Over the timescales required to advance the radiation dynamics significantly, the integrals of the high frequency terms become vanishingly small and we may safely ignore them thereby preserving interference phenomena but \emph{greatly} reducing the frequency content of the sources.
 This eliminates the timestep constraint mentioned previously and we may instead choose $\Delta t \propto (\omega_0 - \omega_L)^{-1}$ (roughly a thousand times larger than $\omega_L^{-1}$).
 This shift then forms the basis of a global rotating-wave approximation for the system as a whole\cite{Allen1987}.
 
